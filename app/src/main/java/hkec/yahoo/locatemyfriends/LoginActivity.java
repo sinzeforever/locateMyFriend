@@ -57,14 +57,19 @@ public class LoginActivity extends ActionBarActivity {
 
     private void doLogin() {
         // call api
+        // create user model
+        createUserModel(loginId);
         // bind sucket
         // swap to main page
         Log.d("myLog", "login as : " + loginId);
         Intent intent = new Intent();
         intent.setClass(LoginActivity.this, MainActivity.class);
-        intent.putExtra("id", loginId);
         startActivity(intent);
         finish();
+    }
+
+    private void createUserModel(String id) {
+        UserProfile.instance = new UserProfile(id);
     }
 
     @Override

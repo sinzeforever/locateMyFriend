@@ -120,6 +120,7 @@ public class MainActivity extends FragmentActivity {
         settingButton.setAlpha(defaultButtonAlpha);
     }
 
+    // main window fragment swap
     private void setPage(Fragment pageFragment) {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

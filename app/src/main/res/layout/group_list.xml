@@ -1,22 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    android:layout_height="match_parent"
+    android:layout_height="70dp"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingLeft="10dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    android:weightSum="1"
+    android:orientation="horizontal"
+    android:background="#F2F2D0"
+    android:id="@+id/groupListLayout">
     <CheckBox
-        android:id="@+id/checkBox1"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"/>
-
-    <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/groupVisibility"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="Group1"
-        android:textSize="15dp"
-        android:layout_alignBottom="@+id/checkBox1"
-        android:layout_toRightOf="@+id/checkBox1"
-        android:layout_toEndOf="@+id/checkBox1" />
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:checked="true" />
 
+    <TextView
+        android:id="@+id/groupName"
+        android:layout_height="wrap_content"
+        android:layout_width="180dp"
+        android:text="Group1"
+        android:textSize="25dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/groupVisibility"
+        android:layout_toEndOf="@+id/groupVisibility"
+        android:layout_marginLeft="37dp"
+        android:layout_marginStart="37dp" />
+
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/user"
+        android:id="@+id/imageView"
+        android:layout_weight="0.07"
+        android:alpha="0.7"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="43dp"
+        android:layout_marginEnd="33dp" />
+
+    <TextView
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/groupMemberCount"
+        android:textSize="30dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

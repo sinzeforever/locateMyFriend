@@ -3,10 +3,16 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/editText"
         android:layout_gravity="center_horizontal"
-        android:text="Setting" />
+        android:background="#0D0D01"
+        android:gravity="center"
+        android:textSize="18dp"
+        android:textColor="#ffffff"
+        android:text="Setting"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp" />
 </LinearLayout>
