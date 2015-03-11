@@ -3,6 +3,7 @@ package hkec.yahoo.locatemyfriends;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,13 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 
+import de.greenrobot.event.EventBus;
+import demo.android.jonaswu.yahoo.com.hackday_demo_lib.API;
+
 /**
  * Created by sinze on 3/9/15.
  */
-public class AddGroupFragment extends Fragment {
+public class AddGroupFragment extends Fragment implements API.DataHandler{
 
     private Button confirmButton;
     private Button cancelButton;
@@ -29,6 +33,7 @@ public class AddGroupFragment extends Fragment {
     private MainActivity mainActivity;
     private HashMap<String, MemberObject> tmpMemberList;
     private boolean isValidGroup = false;
+    private EventBus eventBus;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +51,8 @@ public class AddGroupFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         this.mainActivity = (MainActivity) getActivity();
         tmpMemberList = new HashMap<String, MemberObject>();
+        eventBus = new EventBus();
+        eventBus.register(this);
         setElements();
     }
 
@@ -133,5 +140,10 @@ public class AddGroupFragment extends Fragment {
         // remove member view
         View memberEntryView =  (View)v.getParent();
         ((ViewManager)memberEntryView.getParent()).removeView(memberEntryView);
+    }
+
+    @Override
+    public void onEventMainThread(API.ReturnDataEvent dma) {
+        Log.e("return data", dma.data.toString());
     }
 }

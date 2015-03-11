@@ -1,1 +1,2 @@
-include ':app'
+include ':app', ':toFindmyfriends_lib'
+project(':toFindmyfriends_lib').projectDir = new File('findmyfriends_lib')
