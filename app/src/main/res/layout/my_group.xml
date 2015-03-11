@@ -12,9 +12,18 @@
         android:gravity="center"
         android:textSize="18dp"
         android:textColor="#ffffff"
-        android:text="My Group"
+        android:text="My Group List"
         android:paddingTop="10dp"
         android:paddingBottom="10dp" />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="43dp"
+        android:background="@drawable/custom_button1"
+        android:text="Disable All Group"
+        android:textColor="#ffffff"
+        android:textSize="18dp"
+        android:id="@+id/disableAllButton"
+        style="@style/button_text"/>
     <ListView
         android:id="@+id/groupList"
         android:layout_width="fill_parent"

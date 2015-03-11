@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="60dp"
-    android:background="#F6E367"
+    android:background="@drawable/bottom_menu_style"
     android:alpha="0.7"
     android:layout_alignParentBottom="true"
     android:layout_alignParentLeft="true"

@@ -55,9 +55,9 @@ public class GroupListAdapter extends ArrayAdapter<GroupObject> {
             public void onClick(View v) {
                 String targetGroupName = list[position].name;
                 if (isChecked) {
-                    UserProfile.instance.groupList.get(targetGroupName).visibility = false;
+                    UserProfile.getInstance().groupList.get(targetGroupName).setGroupVisibility(false);
                 } else {
-                    UserProfile.instance.groupList.get(targetGroupName).visibility = true;
+                    UserProfile.getInstance().groupList.get(targetGroupName).setGroupVisibility(true);
                 }
             }
         });

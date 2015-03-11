@@ -46,6 +46,9 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     private void checkLogin() {
+        // hide keyboard
+        Util.hideKeyBoard(this);
+
         loginId = idInput.getText().toString();
         if (!verifyId(loginId)) {
             errorMsg.setVisibility(View.VISIBLE);
@@ -69,7 +72,7 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     private void createUserModel(String id) {
-        UserProfile.instance = new UserProfile(id);
+        UserProfile u = new UserProfile(id);
     }
 
     @Override

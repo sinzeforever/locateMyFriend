@@ -8,7 +8,7 @@
     android:paddingBottom="15dp"
     android:weightSum="1"
     android:orientation="horizontal"
-    android:background="#F2F2D0"
+    android:background="#Ffffff"
     android:id="@+id/groupListLayout">
     <CheckBox
         android:id="@+id/groupVisibility"

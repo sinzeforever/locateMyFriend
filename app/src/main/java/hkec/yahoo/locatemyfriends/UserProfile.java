@@ -8,14 +8,18 @@ import java.util.HashMap;
 public class UserProfile {
     public String id;
     public HashMap<String, GroupObject> groupList;
-    public static UserProfile instance;
+    private static UserProfile instance;
 
     public UserProfile(String _id) {
         this.id = _id;
         groupList = new HashMap<String, GroupObject>();
-
+        UserProfile.instance = this;
         // temporarily put fake group data
         testPrepareUserGroup();
+    }
+
+    public static UserProfile getInstance() {
+        return instance;
     }
 
     public void addGroup(GroupObject group) {

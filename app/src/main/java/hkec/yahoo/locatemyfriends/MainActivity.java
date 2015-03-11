@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 /**
  * Created by sinze on 3/9/15.
@@ -18,6 +19,7 @@ public class MainActivity extends FragmentActivity {
     private ImageView myGroupButton;
     private ImageView addGroupButton;
     private ImageView settingButton;
+    private Toast toast;
     private final int MAP_PAGE = 1;
     private final int MY_GROUP_PAGE = 2;
     private final int ADD_GROUP_PAGE = 3;
@@ -28,6 +30,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         setContentView(R.layout.main);
         setButtons();
         setDefaultPage();
@@ -81,28 +84,28 @@ public class MainActivity extends FragmentActivity {
         });
     }
 
-    private void setMapPage() {
+    public void setMapPage() {
         currentPage = MAP_PAGE;
         resetAllButton();
         mapButton.setAlpha(highlightAlpha);
         setPage(new MapFragment());
     }
 
-    private void setMyGroupPage() {
+    public void setMyGroupPage() {
         currentPage = MY_GROUP_PAGE;
         resetAllButton();
         myGroupButton.setAlpha(highlightAlpha);
         setPage(new MyGroupFragment());
     }
 
-    private void setAddGroupPage() {
+    public void setAddGroupPage() {
         currentPage = ADD_GROUP_PAGE;
         resetAllButton();
         addGroupButton.setAlpha(highlightAlpha);
         setPage(new AddGroupFragment());
     }
 
-    private void setSettingPage() {
+    public void setSettingPage() {
         currentPage = SETTING_PAGE;
         resetAllButton();
         settingButton.setAlpha(highlightAlpha);
@@ -128,4 +131,8 @@ public class MainActivity extends FragmentActivity {
         fragmentTransaction.commit();
     }
 
+    public void makeToast(String input) {
+        toast.setText(input);
+        toast.show();
+    }
 }
