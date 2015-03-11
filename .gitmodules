@@ -1,0 +1,3 @@
+[submodule "toFindmyfriends_lib"]
+    path = toFindmyfriends_lib
+    url = git@git.corp.yahoo.com:jonaswu/findmyfriends_lib.git
