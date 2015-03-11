@@ -24,6 +24,7 @@
         android:layout_width="180dp"
         android:text="Group1"
         android:textSize="25dp"
+        android:textColor="@color/dark_gray"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/groupVisibility"
         android:layout_toEndOf="@+id/groupVisibility"
@@ -48,6 +49,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/groupMemberCount"
         android:textSize="30dp"
+        android:textColor="@color/dark_gray"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />

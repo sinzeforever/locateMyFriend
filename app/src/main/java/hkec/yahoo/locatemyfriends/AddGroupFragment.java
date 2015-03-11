@@ -3,6 +3,7 @@ package hkec.yahoo.locatemyfriends;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ public class AddGroupFragment extends Fragment implements API.DataHandler{
     private ImageButton addMemberButton;
     private EditText groupNameInput;
     private EditText memberNameInput;
+    private TextView memberCountView;
     private ViewGroup memberListLayout;
     private View rootView;
     private MainActivity mainActivity;
@@ -81,6 +83,7 @@ public class AddGroupFragment extends Fragment implements API.DataHandler{
         memberListLayout = (ViewGroup) rootView.findViewById(R.id.addGroupMemberList);
         memberNameInput = (EditText) rootView.findViewById(R.id.addGroupMemberNameInput);
         groupNameInput = (EditText) rootView.findViewById(R.id.addGroupGroupNameInput);
+        memberCountView = (TextView) rootView.findViewById(R.id.addGroupMemberCount);
     }
 
     public void clickCancelButton() {
@@ -88,12 +91,35 @@ public class AddGroupFragment extends Fragment implements API.DataHandler{
     }
 
     public void clickConfirmButton() {
-        doCreateGroup();
-        mainActivity.setMyGroupPage();
+        if (validateCreateGroup()) {
+            doCreateGroup();
+            Handler handler = new Handler();
+            // delay and back to my group page
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    mainActivity.setMyGroupPage();
+                }
+            }, 1000);
+        }
+    }
+
+    public boolean validateCreateGroup() {
+        if (groupNameInput.getText().toString().length() == 0) {
+            mainActivity.makeToast("Please enter group name");
+            return false;
+        } else if (tmpMemberList.size() == 0){
+            mainActivity.makeToast("Please enter at least one member");
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public void doCreateGroup() {
         //call api to create group
+        String[] groupParam = {groupNameInput.getText().toString()};
+        new API().addGroups(getActivity(), groupParam, eventBus);
+        mainActivity.makeToast("Successfully create group");
     }
 
     public void clickAddMemberButton() {
@@ -102,7 +128,11 @@ public class AddGroupFragment extends Fragment implements API.DataHandler{
         Util.hideKeyBoard(getActivity());
         // call api to check if the user exist
         // if user exists, add user to the tmp group
-        addMemberToTmpGroup(memberId);
+        if (memberId.length() > 0 ) {
+            addMemberToTmpGroup(memberId);
+        } else {
+            mainActivity.makeToast("Please enter valid user id");
+        }
     }
 
     public void addMemberToTmpGroup(String memberId) {
@@ -110,17 +140,23 @@ public class AddGroupFragment extends Fragment implements API.DataHandler{
         tmpMemberList.put(memberId, new MemberObject(memberId));
         // show member in view entry
         showNewUserInTheList(memberId);
+        // change the group member count
+        setMemberCountView();
+    }
+
+    public void setMemberCountView() {
+        memberCountView.setText("(" + tmpMemberList.size() +")");
     }
 
     public void showNewUserInTheList(final String memberId) {
         LayoutInflater vi = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = vi.inflate(R.layout.add_member_entry, null);
+        View entry = vi.inflate(R.layout.add_member_entry, null);
 
         // fill in any details dynamically here
-        TextView memberIdView = (TextView) v.findViewById(R.id.addMemberEntryId);
+        TextView memberIdView = (TextView) entry.findViewById(R.id.addMemberEntryId);
         memberIdView.setText(memberId);
-        TextView closeButton = (TextView) v.findViewById(R.id.addMemberEntryCloseButton);
-        closeButton.setOnClickListener(new View.OnClickListener() {
+        TextView closeButton = (TextView) entry.findViewById(R.id.addMemberEntryCloseButton);
+        entry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 removeMemberEntry(memberId, v);
@@ -129,17 +165,19 @@ public class AddGroupFragment extends Fragment implements API.DataHandler{
         // insert into main view
         ViewGroup insertPoint = (ViewGroup) rootView.findViewById(R.id.addGroupMemberList);
         //insertPoint.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
-        memberListLayout.addView(v);
+        memberListLayout.addView(entry);
 
         // clear member name input
         memberNameInput.getText().clear();
     }
-    public void removeMemberEntry(String memberId, View v) {
+    public void removeMemberEntry(String memberId, View memberEntryView) {
         // remove member from tmp list
         tmpMemberList.remove(memberId);
         // remove member view
-        View memberEntryView =  (View)v.getParent();
+        //View memberEntryView =  (View)v.getParent();
         ((ViewManager)memberEntryView.getParent()).removeView(memberEntryView);
+        // change member count view
+        setMemberCountView();
     }
 
     @Override
