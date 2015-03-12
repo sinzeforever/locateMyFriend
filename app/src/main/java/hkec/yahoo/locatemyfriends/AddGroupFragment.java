@@ -1,6 +1,5 @@
 package hkec.yahoo.locatemyfriends;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,11 +17,14 @@ import java.util.HashMap;
 
 import de.greenrobot.event.EventBus;
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.API;
+import demo.android.jonaswu.yahoo.com.hackday_demo_lib.BaseFragment;
+import demo.android.jonaswu.yahoo.com.hackday_demo_lib.LocationSyncroner;
 
-/**
+/**ckday_demo_lib.API;
+
  * Created by sinze on 3/9/15.
  */
-public class AddGroupFragment extends Fragment implements API.DataHandler{
+public class AddGroupFragment extends BaseFragment{
 
     private Button confirmButton;
     private Button cancelButton;
@@ -183,5 +185,10 @@ public class AddGroupFragment extends Fragment implements API.DataHandler{
     @Override
     public void onEventMainThread(API.ReturnDataEvent dma) {
         Log.e("return data", dma.data.toString());
+    }
+
+    @Override
+    public void onEventMainThread(LocationSyncroner.LocationEvent le) {
+        //
     }
 }

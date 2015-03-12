@@ -34,7 +34,7 @@ public class GroupListAdapter extends ArrayAdapter<GroupObject> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         // displaying a new row view
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.group_list, null);
+            convertView = inflater.inflate(R.layout.group_list_entry, null);
             viewHolder = new GroupViewHolder();
             viewHolder.groupName = (TextView) convertView.findViewById(R.id.groupName);
             viewHolder.groupMemberCount = (TextView) convertView.findViewById(R.id.groupMemberCount);

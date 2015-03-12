@@ -1,6 +1,5 @@
 package hkec.yahoo.locatemyfriends;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,10 +7,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
+import demo.android.jonaswu.yahoo.com.hackday_demo_lib.API;
+import demo.android.jonaswu.yahoo.com.hackday_demo_lib.BaseFragment;
+import demo.android.jonaswu.yahoo.com.hackday_demo_lib.LocationSyncroner;
+
 /**
  * Created by sinze on 3/9/15.
  */
-public class MyGroupFragment extends Fragment{
+public class MyGroupFragment extends BaseFragment{
     private ListView groupListView;
     private View rootView;
     private GroupListAdapter groupListAdapter;
@@ -48,7 +51,7 @@ public class MyGroupFragment extends Fragment{
         // bind group list array adapter
         int listSize = UserProfile.getInstance().groupList.values().size();
         GroupObject[] groupList = (GroupObject [])UserProfile.getInstance().groupList.values().toArray(new GroupObject[listSize]);
-        groupListAdapter = new GroupListAdapter(getActivity().getApplicationContext(), R.layout.group_list, groupList);
+        groupListAdapter = new GroupListAdapter(getActivity().getApplicationContext(), R.layout.group_list_entry, groupList);
         groupListView = (ListView) rootView.findViewById(R.id.groupList);
         groupListView.setAdapter(groupListAdapter);
     }
@@ -59,5 +62,15 @@ public class MyGroupFragment extends Fragment{
         }
         // reload the list
         setListView();
+    }
+
+    @Override
+    public void onEventMainThread(API.ReturnDataEvent dma) {
+
+    }
+
+    @Override
+    public void onEventMainThread(LocationSyncroner.LocationEvent le) {
+
     }
 }

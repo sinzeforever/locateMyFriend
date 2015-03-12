@@ -95,7 +95,7 @@ public class MainActivity extends FragmentActivity {
         resetAllButton();
         mapButton.setAlpha(highlightAlpha);
         toast.cancel();
-        setPage(new MapFragment());
+        setPage((Fragment)(new MapFragment()));
     }
 
     public void setMyGroupPage() {

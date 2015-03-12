@@ -1,6 +1,5 @@
 package hkec.yahoo.locatemyfriends;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -29,22 +28,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.greenrobot.event.EventBus;
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.API;
+import demo.android.jonaswu.yahoo.com.hackday_demo_lib.BaseFragment;
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.LocationSyncroner;
 
 /**
  * Created by sinze on 3/10/15.
  */
-public class MapFragment extends Fragment implements LocationListener, API.DataHandler, LocationSyncroner.DataHandler {
+public class MapFragment extends BaseFragment implements LocationListener {
 
     private View rootView;
 
     private GoogleMap mMap;
     private Map<String, Marker> mMarker = new HashMap<String, Marker>();
-
-    private EventBus eventBus;
-    LocationSyncroner ls;
 
     Double latitude, longitude;
 
@@ -62,29 +58,23 @@ public class MapFragment extends Fragment implements LocationListener, API.DataH
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        try {
-            ls = LocationSyncroner.create(this);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-        eventBus = new EventBus();
-        eventBus.register(this);
-
         setUpMapIfNeeded();
     }
 
     @Override
     public void onResume() {
-        ls.sync(getActivity(), "Suzy");
+        try {
+            LocationSyncroner.init(this, getActivity(), UserProfile.getInstance().id);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
         super.onResume();
         setUpMapIfNeeded();
     }
 
     @Override
     public void onPause() {
-        ls.disconnect();
+        LocationSyncroner.reset();
         super.onPause();
     }
 
@@ -176,7 +166,7 @@ public class MapFragment extends Fragment implements LocationListener, API.DataH
         Toast.makeText(getActivity(), "Time: " + currentDateTimeString + " Place: (" + latitude + "," + longitude + ")", Toast.LENGTH_LONG).show();
 
         try {
-            ls.updateMyLocation("Suzy", String.valueOf(latitude), String.valueOf(longitude));
+            LocationSyncroner.updateMyLocation(UserProfile.getInstance().id, String.valueOf(latitude), String.valueOf(longitude));
         } catch (JSONException e) {
             e.printStackTrace();
         }

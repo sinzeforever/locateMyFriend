@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 /**
  * Created by sinze on 3/10/15.
  */
-public class SettingFragment extends Fragment {
+public class SettingFragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
