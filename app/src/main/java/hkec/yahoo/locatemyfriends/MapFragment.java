@@ -7,6 +7,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,7 @@ import demo.android.jonaswu.yahoo.com.hackday_demo_lib.LocationSyncroner;
  */
 public class MapFragment extends BaseFragment implements LocationListener {
 
-    private View rootView;
+    private static View rootView;
 
     private GoogleMap mMap;
     private Map<String, Marker> mMarker = new HashMap<String, Marker>();
@@ -50,8 +51,17 @@ public class MapFragment extends BaseFragment implements LocationListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.map, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (rootView != null) {
+            ViewGroup parent = (ViewGroup) rootView.getParent();
+            if (parent != null)
+                parent.removeView(rootView);
+        }
+        try {
+            rootView = inflater.inflate(R.layout.map, container, false);
+        } catch (InflateException e) {
+        /* map is already there, just return view as it is */
+        }
         return rootView;
     }
 
@@ -97,7 +107,7 @@ public class MapFragment extends BaseFragment implements LocationListener {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment)( (FragmentActivity)getActivity()).getSupportFragmentManager().findFragmentById(R.id.map))
+            mMap = ((SupportMapFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
@@ -152,7 +162,7 @@ public class MapFragment extends BaseFragment implements LocationListener {
     }
 
     @Override
-    public void onLocationChanged(Location myLocation) {	//當地點改變時
+    public void onLocationChanged(Location myLocation) {    //當地點改變時
         // TODO Auto-generated method stub
 
         // 更新自己所在位置
@@ -173,17 +183,17 @@ public class MapFragment extends BaseFragment implements LocationListener {
     }
 
     @Override
-    public void onProviderDisabled(String arg0) {	//當GPS或網路定位功能關閉時
+    public void onProviderDisabled(String arg0) {    //當GPS或網路定位功能關閉時
         // TODO Auto-generated method stub
     }
 
     @Override
-    public void onProviderEnabled(String arg0) {	//當GPS或網路定位功能開啟
+    public void onProviderEnabled(String arg0) {    //當GPS或網路定位功能開啟
         // TODO Auto-generated method stub
     }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {	//定位狀態改變
+    public void onStatusChanged(String provider, int status, Bundle extras) {    //定位狀態改變
         //status=OUT_OF_SERVICE 供應商停止服務
         //status=TEMPORARILY_UNAVAILABLE 供應商暫停服務
     }
@@ -213,4 +223,5 @@ public class MapFragment extends BaseFragment implements LocationListener {
             mMarker.put(le.member, marker);
         }
     }
+
 }
