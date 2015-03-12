@@ -18,11 +18,13 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="43dp"
-        android:background="@color/main_orange"
         android:text="Disable All Group"
         android:textColor="#ffffff"
         android:textSize="18dp"
+        android:background="@drawable/custom_button1"
         android:id="@+id/myGroupDisableAllButton"
+        style="@style/button_text"
+        android:layout_marginTop="15dp"
         android:visibility="gone"/>
     <LinearLayout
         android:id="@+id/myGroupNoGroupLayout"

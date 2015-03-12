@@ -53,4 +53,10 @@ public class Util {
             return null;
         }
     }
+
+    public static int pickColor(int index) {
+        int[] colors = { 0xffE7AF5A, 0xff000000, 0xFF8000FF, 0xFF00FF00, 0xFFFF00FF, 0xFFFF0000, 0xFFFF00FF, 0xFFFFFFFF, 0xFF00FF80 };
+
+        return colors[ (index % colors.length)];
+    }
 }
