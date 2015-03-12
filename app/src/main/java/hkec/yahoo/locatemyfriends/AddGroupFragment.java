@@ -161,7 +161,6 @@ public class AddGroupFragment extends BaseFragment{
     }
 
     public void postCreateGroup() {
-        currentAPI = API_NONE;
         callAddMemberToGroupAPI();
     }
 
@@ -242,6 +241,7 @@ public class AddGroupFragment extends BaseFragment{
         } else if (currentAPI == API_ADD_MEMBERS_TO_GROUP) {
             addMemberToGroupAPICallback(dma.data.toString());
         }
+        currentAPI = API_NONE;
     }
 
     @Override

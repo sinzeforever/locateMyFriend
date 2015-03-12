@@ -14,6 +14,7 @@ public class UserProfile {
         this.id = _id;
         groupList = new HashMap<String, GroupObject>();
         UserProfile.instance = this;
+        testPrepareUserGroup();
     }
 
     public static UserProfile getInstance() {

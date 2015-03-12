@@ -19,8 +19,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="30dp"
         android:paddingTop="30dp"
-        android:paddingRight="20dp"
-        android:paddingBottom="80dp">
+        android:paddingRight="20dp">
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="35dp"
@@ -101,8 +100,9 @@
             android:textColor="#ffffff"
             android:background="#aaa"
             android:layout_marginLeft="5dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true" />
+            android:layout_marginTop="300dp"
+            android:layout_below="@+id/addGroupGroupNameInput"
+            android:layout_alignParentLeft="true" />
         <Button
             android:id="@+id/addGroupConfirmButton"
             android:layout_width="130dp"
@@ -112,8 +112,8 @@
             android:textColor="#ffffff"
             android:background="@color/main_orange"
             android:layout_marginRight="5dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true" />
+            android:layout_alignTop="@+id/addGroupCancelButton"
+            android:layout_alignParentRight="true"/>
     </RelativeLayout>
 
 </LinearLayout>

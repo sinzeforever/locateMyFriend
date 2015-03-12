@@ -73,6 +73,7 @@ public class MyGroupFragment extends BaseFragment{
     }
 
     public void setListView() {
+        //groupList = UserProfile.getInstance().groupList.values().toArray(new GroupObject[0]);
         // show disable all button
         disableAllButton.setVisibility(View.VISIBLE);
 
@@ -91,6 +92,9 @@ public class MyGroupFragment extends BaseFragment{
     }
 
     public void callGetGroupAPI() {
+        if (currentAPI != API_NONE) {
+            return;
+        }
         currentAPI = API_GET_GROUP_LIST;
         new API().getGroupsFromMember(mainActivity, UserProfile.getInstance().id, getEventBus());
     }
@@ -139,6 +143,7 @@ public class MyGroupFragment extends BaseFragment{
         if (currentAPI == API_GET_GROUP_LIST) {
             getGroupAPICallback(dma.data.toString());
         }
+        currentAPI = API_NONE;
     }
 
     @Override

@@ -31,9 +31,48 @@
             android:paddingBottom="10dp" />
 
     </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:layout_marginBottom="20dp">
+        <EditText
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:id="@+id/memberListNameInput"
+            android:hint="Invite New Member"
+            android:textColorHint="@color/light_gray"
+            android:paddingLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerHorizontal="true" />
+        <ImageButton
+            android:layout_width="35dp"
+            android:layout_height="50dp"
+            android:src="@drawable/add"
+            android:id="@+id/memberListAddMemberButton"
+            android:scaleType="fitCenter"
+            android:background="#00000000"
+            android:layout_alignTop="@+id/memberListNameInput"
+            android:layout_toRightOf="@+id/memberListNameInput"
+            android:layout_toEndOf="@+id/memberListNameInput" />
+
+    </RelativeLayout>
     <ListView
         android:id="@+id/memberList"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="320dp"
         android:layout_marginTop="10dp"/>
+    <Button
+        android:id="@+id/memberListLeaveButton"
+        android:layout_width="170dp"
+        android:layout_height="40dp"
+        android:text="Leave Group"
+        android:textSize="20dp"
+        android:textColor="#ffffff"
+        android:background="@color/main_orange"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_alignTop="@+id/memberList"/>
+
 </LinearLayout>
