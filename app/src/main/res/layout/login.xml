@@ -44,7 +44,7 @@
         android:background="#ffffff"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:text="jacky" />
+        android:text="Jacky" />
 
     <Button
         android:layout_width="wrap_content"

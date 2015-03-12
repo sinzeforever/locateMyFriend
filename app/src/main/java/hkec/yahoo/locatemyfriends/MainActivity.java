@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -30,10 +31,15 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
+        setToast();
         setContentView(R.layout.main);
         setButtons();
         setDefaultPage();
+    }
+
+    private void setToast() {
+        toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
     }
 
     private void setButtons() {
@@ -88,6 +94,7 @@ public class MainActivity extends FragmentActivity {
         currentPage = MAP_PAGE;
         resetAllButton();
         mapButton.setAlpha(highlightAlpha);
+        toast.cancel();
         setPage(new MapFragment());
     }
 
@@ -95,6 +102,7 @@ public class MainActivity extends FragmentActivity {
         currentPage = MY_GROUP_PAGE;
         resetAllButton();
         myGroupButton.setAlpha(highlightAlpha);
+        toast.cancel();
         setPage(new MyGroupFragment());
     }
 
@@ -102,6 +110,7 @@ public class MainActivity extends FragmentActivity {
         currentPage = ADD_GROUP_PAGE;
         resetAllButton();
         addGroupButton.setAlpha(highlightAlpha);
+        toast.cancel();
         setPage(new AddGroupFragment());
     }
 
@@ -109,6 +118,7 @@ public class MainActivity extends FragmentActivity {
         currentPage = SETTING_PAGE;
         resetAllButton();
         settingButton.setAlpha(highlightAlpha);
+        toast.cancel();
         setPage(new SettingFragment());
     }
 
