@@ -25,6 +25,7 @@ public class MainActivity extends FragmentActivity {
     private final int MY_GROUP_PAGE = 2;
     private final int ADD_GROUP_PAGE = 3;
     private final int SETTING_PAGE = 4;
+    private final int GROUP_MEMBER_PAGE = 5;
     private final float highlightAlpha = 1.0f;
     private final float defaultButtonAlpha = 0.5f;
 
@@ -121,6 +122,16 @@ public class MainActivity extends FragmentActivity {
         toast.cancel();
         setPage(new SettingFragment());
     }
+
+    public void setGroupMemberPage(GroupObject group) {
+        currentPage = GROUP_MEMBER_PAGE;
+        toast.cancel();
+        // create a new group fragment and assign the target group
+        GroupMemberFragment groupMemberFragment = new GroupMemberFragment();
+        groupMemberFragment.setGroup(group);
+        setPage(groupMemberFragment);
+    }
+
 
     private void setDefaultPage() {
         setMapPage();

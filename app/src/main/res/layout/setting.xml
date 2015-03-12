@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/main_orange">
+    android:layout_height="match_parent">
 
     <TextView
         android:layout_width="match_parent"
@@ -16,4 +15,43 @@
         android:text="Setting"
         android:paddingTop="10dp"
         android:paddingBottom="10dp" />
-</LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Name : "
+        android:textColor="@color/dark_gray"
+        android:textSize="22dp"
+        android:id="@+id/textView3"
+        android:layout_marginLeft="15dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignTop="@+id/settingUserName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Jacky"
+        android:textColor="@color/dark_gray"
+        android:textSize="22dp"
+        android:id="@+id/settingUserName"
+        android:layout_marginTop="41dp"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/editText"
+        android:layout_toRightOf="@+id/textView3"
+        android:layout_toEndOf="@+id/textView3" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:textSize="20dp"
+        android:textColor="@color/dark_gray"
+        android:id="@+id/settingLogout"
+        android:layout_marginLeft="31dp"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="-10dp"
+        android:layout_alignTop="@+id/settingUserName"
+        android:layout_toRightOf="@+id/settingUserName"
+        android:layout_toEndOf="@+id/settingUserName" />
+</RelativeLayout>

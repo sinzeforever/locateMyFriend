@@ -2,6 +2,7 @@ package hkec.yahoo.locatemyfriends;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,11 +34,12 @@ public class MemberListAdapter extends ArrayAdapter<MemberObject> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         // displaying a new row view
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.group_list_entry, null);
+            convertView = inflater.inflate(R.layout.member_list_entry, null);
             viewHolder = new MemberViewHolder();
             viewHolder.memberName = (TextView) convertView.findViewById(R.id.memberName);
             viewHolder.memberVisibility = (CheckBox) convertView.findViewById(R.id.memberVisibility);
             convertView.setTag(viewHolder);
+
         } else {
             // show a existing row view
             viewHolder = (MemberViewHolder) convertView.getTag();
@@ -50,12 +52,12 @@ public class MemberListAdapter extends ArrayAdapter<MemberObject> {
         viewHolder.memberVisibility.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-/*
+                Log.d("myLog", String.valueOf(member.visibility));
                 if (isChecked) {
-
+                    member.visibility = false;
                 } else {
-
-                }*/
+                    member.visibility = true;
+                }
             }
         });
 

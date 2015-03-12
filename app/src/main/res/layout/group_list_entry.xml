@@ -2,13 +2,12 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="70dp">
+    android:layout_height="70dp"
+    android:gravity="center_vertical">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="69dp"
         android:paddingLeft="10dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
         android:weightSum="1"
         android:orientation="horizontal"
         android:id="@+id/groupListLayout"
@@ -22,54 +21,60 @@
             android:layout_centerVertical="true"
             android:checked="true" />
 
-        <TextView
-            android:id="@+id/groupName"
-            android:layout_height="wrap_content"
-            android:layout_width="120dp"
-            android:text="Group1"
-            android:textSize="20dp"
-            android:textColor="@color/dark_gray"
-            android:layout_centerVertical="true"
+        <RelativeLayout
+            android:id="@+id/groupWrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_toRightOf="@+id/groupVisibility"
-            android:layout_toEndOf="@+id/groupVisibility"
-            android:layout_marginLeft="17dp"
-            android:layout_marginStart="37dp" />
+            android:layout_toEndOf="@+id/groupVisibility">
+            <TextView
+                android:id="@+id/groupName"
+                android:layout_height="wrap_content"
+                android:layout_width="120dp"
+                android:text="Group1"
+                android:textSize="20dp"
+                android:textColor="@color/dark_gray"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="17dp"
+                android:layout_marginStart="37dp" />
 
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/user"
-            android:id="@+id/userIcon"
-            android:layout_weight="0.07"
-            android:alpha="0.7"
-            android:layout_marginRight="8dp"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/groupMemberCount"/>
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/user"
+                android:id="@+id/userIcon"
+                android:layout_weight="0.07"
+                android:alpha="0.7"
+                android:layout_marginRight="8dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/groupMemberCount"/>
 
-        <TextView
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/groupMemberCount"
-            android:textSize="20dp"
-            android:textColor="@color/dark_gray"
-            android:layout_centerVertical="true"
-            android:text="5"
-            android:layout_marginRight="15dp"
-            android:layout_toLeftOf="@+id/rightArrow"/>
-        <ImageView
-            android:id="@+id/rightArrow"
-            android:layout_width="20dp"
-            android:layout_height="30dp"
-            android:src="@drawable/arrow_right"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="5dp"
-            android:longClickable="false" />
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/groupMemberCount"
+                android:textSize="20dp"
+                android:textColor="@color/dark_gray"
+                android:layout_centerVertical="true"
+                android:text="5"
+                android:layout_marginRight="15dp"
+                android:layout_toLeftOf="@+id/rightArrow"/>
+            <ImageView
+                android:id="@+id/rightArrow"
+                android:layout_width="20dp"
+                android:layout_height="30dp"
+                android:src="@drawable/arrow_right"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:longClickable="false"
+                android:layout_marginTop="19dp" />
+        </RelativeLayout>
 
     </RelativeLayout>
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/main_orange"/>
+        android:background="@color/light_gray"/>
 </RelativeLayout>
