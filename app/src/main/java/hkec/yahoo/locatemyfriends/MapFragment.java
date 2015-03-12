@@ -1,6 +1,10 @@
 package hkec.yahoo.locatemyfriends;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,16 +28,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.API;
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.BaseFragment;
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.LocationSyncroner;
+import com.squareup.picasso.Picasso;
 
 
 /**
@@ -163,14 +168,6 @@ public class MapFragment extends BaseFragment implements LocationListener {
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, this);
     }
 
-    public void resetMarkers() {
-        // 清空地圖
-        mMap.clear();
-
-        //
-        getGroupsFromMember();
-    }
-
     public void getGroupsFromMember(){
         this.apiMethod = "getGroupsFromMember";
         new API().getGroupsFromMember(getActivity(), UserProfile.getInstance().id, this.getEventBus());
@@ -181,6 +178,16 @@ public class MapFragment extends BaseFragment implements LocationListener {
         new API().getMembersFromGroups(getActivity(), groups, this.getEventBus());
     }
 
+    // 重設 marker
+    public void resetMarkers() {
+        // 清空地圖
+        mMap.clear();
+
+        //
+        getGroupsFromMember();
+    }
+
+    // 新增 marker
     public void addMarker(String name, String lat, String lng) {
         Marker marker;
         if (mMarker.containsKey(name)) {
@@ -189,10 +196,27 @@ public class MapFragment extends BaseFragment implements LocationListener {
             marker.setPosition(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)));
         } else {
             // add marker
+
+
+            Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+            Bitmap bmp = Bitmap.createBitmap(80, 80, conf);
+
             marker = mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)))
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_green))
-                    .title(name));
+                        //.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_green))
+                        .icon(BitmapDescriptorFactory.fromBitmap(bmp))
+                        .title(name));
+
+            if (name.equals("Pitt") || name.equals("Jolie")  || name.equals("Beckham") || name.equals("Suzy")) {
+                Picasso.with(getActivity()).load("http://gourmet.dodoke.net/icons/" + name + ".png").into(new PicassoMarker(marker));
+            } else {
+                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_green));
+            }
+
+
+
+
+
             mMarker.put(name, marker);
         }
     }
@@ -204,12 +228,15 @@ public class MapFragment extends BaseFragment implements LocationListener {
 
             try {
                 JSONArray groupsArray = dma.data.getJSONArray("data");
-                String[] groupStrArray = new String[groupsArray.length()];
-                for(int i=0; i < groupsArray.length(); i++){
-                    JSONObject group = groupsArray.getJSONObject(i);
-                    groupStrArray[i] =  group.getString("name");
+                if (groupsArray.length() > 0) {
+                    String[] groupStrArray = new String[groupsArray.length()];
+                    for(int i=0; i < groupsArray.length(); i++){
+                        JSONObject group = groupsArray.getJSONObject(i);
+                        groupStrArray[i] =  group.getString("name");
+                    }
+                    getMembersFromGroups(groupStrArray);
                 }
-                getMembersFromGroups(groupStrArray);
+
                 //String[] groups = {"group1", "group2", "group3"};
                 //getMembersFromGroups(groups);
             } catch (Exception e) {
