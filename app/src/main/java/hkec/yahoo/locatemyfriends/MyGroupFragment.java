@@ -45,6 +45,7 @@ public class MyGroupFragment extends BaseFragment{
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        groupList = new GroupObject[0];
         this.mainActivity = (MainActivity) getActivity();
         setDisableAllButton();
         callGetGroupAPI();
@@ -84,7 +85,7 @@ public class MyGroupFragment extends BaseFragment{
     }
 
     public void disableAllGroup() {
-        for(GroupObject group : UserProfile.getInstance().groupList.values()){
+        for(GroupObject group : groupList){
             group.setGroupVisibility(false);
         }
         // reload the list

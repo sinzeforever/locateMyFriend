@@ -15,6 +15,7 @@ public class GroupObject {
         this.name = name;
         this.memberList = new HashMap<String, MemberObject>();
         this.visibility = true;
+        this.color = "#FFFFFF";
     }
 
     public void addMember(MemberObject member) {

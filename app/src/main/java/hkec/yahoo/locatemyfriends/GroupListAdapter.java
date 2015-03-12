@@ -38,9 +38,10 @@ public class GroupListAdapter extends ArrayAdapter<GroupObject> {
             convertView = inflater.inflate(R.layout.group_list_entry, null);
             viewHolder = new GroupViewHolder();
             viewHolder.groupName = (TextView) convertView.findViewById(R.id.groupName);
-            viewHolder.groupMemberCount = (TextView) convertView.findViewById(R.id.groupMemberCount);
             viewHolder.groupVisibility = (CheckBox) convertView.findViewById(R.id.groupVisibility);
             viewHolder.groupWrapper = (RelativeLayout) convertView.findViewById(R.id.groupWrapper);
+            viewHolder.groupColor = (TextView) convertView.findViewById(R.id.groupColor);
+
             convertView.setTag(viewHolder);
         } else {
             // show a existing row view
@@ -49,7 +50,6 @@ public class GroupListAdapter extends ArrayAdapter<GroupObject> {
 
         // bind data with the view
         viewHolder.groupName.setText(group.name);
-        viewHolder.groupMemberCount.setText(String.valueOf(group.memberList.size()));
         viewHolder.groupVisibility.setChecked(group.visibility);
         final boolean isChecked = viewHolder.groupVisibility.isChecked();
         viewHolder.groupVisibility.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +65,9 @@ public class GroupListAdapter extends ArrayAdapter<GroupObject> {
             }
         });
 
+        // random set color
+        viewHolder.groupColor.setBackgroundColor(Util.pickColor(position));
+
         viewHolder.groupWrapper.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,7 +82,7 @@ public class GroupListAdapter extends ArrayAdapter<GroupObject> {
     private class GroupViewHolder {
         CheckBox groupVisibility;
         TextView groupName;
-        TextView groupMemberCount;
         RelativeLayout groupWrapper;
+        TextView groupColor;
     }
 }

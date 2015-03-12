@@ -47,7 +47,7 @@
         android:text="Jacky" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Login"
@@ -56,8 +56,8 @@
         android:background="@drawable/login_button"
         android:textColor="#333333"
         android:textSize="20dp"
-        android:width="80dp"
-        android:height="40dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:layout_below="@+id/idInput"
         android:layout_centerHorizontal="true" />
 
