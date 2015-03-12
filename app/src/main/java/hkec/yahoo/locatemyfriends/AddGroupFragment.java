@@ -38,7 +38,7 @@ public class AddGroupFragment extends BaseFragment{
     private ArrayList<String> tmpMemberList;
     private String tmpGroupName;
     private EventBus eventBus;
-    private int currentAPI;
+    private int currentAPI = 0;
     private final int API_NONE = 0;
     private final int API_CREATE_GROUP = 1;
     private final int API_ADD_MEMBERS_TO_GROUP = 2;
@@ -118,12 +118,18 @@ public class AddGroupFragment extends BaseFragment{
     }
 
     public void callCreateGroupAPI() {
+        if (currentAPI != API_NONE) {
+            return;
+        }
         currentAPI = API_CREATE_GROUP;
         String[] apiParam = {groupNameInput.getText().toString()};
         new API().addGroups(getActivity(), apiParam, eventBus);
     }
 
     public void callAddMemberToGroupAPI() {
+        if (currentAPI != API_NONE) {
+            return;
+        }
 
         // add the user himself into the tmp member list
         tmpMemberList.add(UserProfile.getInstance().id);

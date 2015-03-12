@@ -14,8 +14,6 @@ public class UserProfile {
         this.id = _id;
         groupList = new HashMap<String, GroupObject>();
         UserProfile.instance = this;
-        // temporarily put fake group data
-        testPrepareUserGroup();
     }
 
     public static UserProfile getInstance() {

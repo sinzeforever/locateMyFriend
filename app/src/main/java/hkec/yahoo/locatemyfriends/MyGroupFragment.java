@@ -1,11 +1,17 @@
 package hkec.yahoo.locatemyfriends;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.API;
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.BaseFragment;
@@ -19,6 +25,12 @@ public class MyGroupFragment extends BaseFragment{
     private View rootView;
     private GroupListAdapter groupListAdapter;
     private Button disableAllButton;
+    private MainActivity mainActivity;
+    public GroupObject[] groupList;
+    private int currentAPI = 0;
+    private final int API_NONE = 0;
+    private final int API_GET_GROUP_LIST = 1;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,12 +45,13 @@ public class MyGroupFragment extends BaseFragment{
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setListView();
+        this.mainActivity = (MainActivity) getActivity();
         setDisableAllButton();
+        callGetGroupAPI();
     }
 
     public void setDisableAllButton() {
-        disableAllButton = (Button) rootView.findViewById(R.id.disableAllButton);
+        disableAllButton = (Button) rootView.findViewById(R.id.myGroupDisableAllButton);
         disableAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,10 +60,23 @@ public class MyGroupFragment extends BaseFragment{
         });
     }
 
+    public void setGoCreateGroupMsg() {
+        View createGroupMessage = rootView.findViewById(R.id.myGroupNoGroupLayout);
+        createGroupMessage.setVisibility(View.VISIBLE);
+        Button goCreateGroupButton = (Button) rootView.findViewById(R.id.myGroupAddGroupButton);
+        goCreateGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainActivity.setAddGroupPage();
+            }
+        });
+    }
+
     public void setListView() {
+        // show disable all button
+        disableAllButton.setVisibility(View.VISIBLE);
+
         // bind group list array adapter
-        int listSize = UserProfile.getInstance().groupList.values().size();
-        GroupObject[] groupList = (GroupObject [])UserProfile.getInstance().groupList.values().toArray(new GroupObject[listSize]);
         groupListAdapter = new GroupListAdapter(getActivity(), R.layout.group_list_entry, groupList);
         groupListView = (ListView) rootView.findViewById(R.id.groupList);
         groupListView.setAdapter(groupListAdapter);
@@ -64,9 +90,55 @@ public class MyGroupFragment extends BaseFragment{
         setListView();
     }
 
+    public void callGetGroupAPI() {
+        currentAPI = API_GET_GROUP_LIST;
+        new API().getGroupsFromMember(mainActivity, UserProfile.getInstance().id, getEventBus());
+    }
+
+    public void postGetGroupAPI(String response) {
+        // parsing group list API data and save it
+        groupList = parseGroupListJSONData(response);
+
+        // if the user has more than one group
+        if (groupList.length > 0) {
+            // set list view
+            setListView();
+        } else {
+            // show create-group message
+            setGoCreateGroupMsg();
+        }
+    }
+
+    public void getGroupAPICallback(String response) {
+        if (Util.getAPIResponseStatus(response)) {
+            postGetGroupAPI(response);
+        } else {
+            mainActivity.makeToast("Error parsing api when getting group list");
+        }
+    }
+
+    public GroupObject[] parseGroupListJSONData(String reponse) {
+        JSONArray groupJSONArray = Util.getAPIResponseArrayData(reponse);
+        ArrayList<GroupObject> groupList = new ArrayList<GroupObject>();
+        if (groupJSONArray != null) {
+            try {
+                for (int i = 0; i < groupJSONArray.length(); i++) {
+                    String tmpGroupName = new JSONObject(groupJSONArray.getString(i)).getString("name");
+                    groupList.add(new GroupObject(tmpGroupName));
+                }
+            } catch (Exception e) {
+                Log.d("myLog", "Fail to parse get-group-list API data");
+            }
+        }
+        GroupObject[] groupAry = new GroupObject[groupList.size()];
+        return  groupList.toArray(groupAry);
+    }
+
     @Override
     public void onEventMainThread(API.ReturnDataEvent dma) {
-
+        if (currentAPI == API_GET_GROUP_LIST) {
+            getGroupAPICallback(dma.data.toString());
+        }
     }
 
     @Override

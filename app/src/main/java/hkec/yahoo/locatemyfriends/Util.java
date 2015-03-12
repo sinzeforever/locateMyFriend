@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -28,6 +29,28 @@ public class Util {
         } catch (Exception e) {
             Log.d("myLog", "Error parsing api.. response - " + response);
             return false;
+        }
+    }
+
+    public static JSONObject getAPIResponseData(String response) {
+        JSONObject jsonObject;
+        try {
+            jsonObject = new JSONObject(response);
+            return jsonObject.getJSONObject("data");
+        } catch (Exception e) {
+            Log.d("myLog", "Error parsing api.. response - " + response);
+            return null;
+        }
+    }
+
+    public static JSONArray getAPIResponseArrayData(String response) {
+        JSONObject jsonObject;
+        try {
+            jsonObject = new JSONObject(response);
+            return jsonObject.getJSONArray("data");
+        } catch (Exception e) {
+            Log.d("myLog", "Error parsing api.. response - " + response);
+            return null;
         }
     }
 }
