@@ -65,6 +65,7 @@ public class LoginActivity extends ActionBarActivity {
         // bind sucket
         // swap to main page
         Log.d("myLog", "login as : " + loginId);
+        Util.hideKeyBoard(this);
         Intent intent = new Intent();
         intent.setClass(LoginActivity.this, MainActivity.class);
         startActivity(intent);
