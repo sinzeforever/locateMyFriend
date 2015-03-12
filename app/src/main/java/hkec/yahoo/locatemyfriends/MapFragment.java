@@ -11,7 +11,6 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,17 +20,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.URISyntaxException;
-import java.text.DateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.API;
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.BaseFragment;
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.LocationSyncroner;
+
 
 /**
  * Created by sinze on 3/10/15.
@@ -44,6 +47,8 @@ public class MapFragment extends BaseFragment implements LocationListener {
     private Map<String, Marker> mMarker = new HashMap<String, Marker>();
 
     Double latitude, longitude;
+
+    private String apiMethod = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,13 +78,18 @@ public class MapFragment extends BaseFragment implements LocationListener {
 
     @Override
     public void onResume() {
+        // 重新連線
         try {
             LocationSyncroner.init(this, getActivity(), UserProfile.getInstance().id);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+
         super.onResume();
         setUpMapIfNeeded();
+
+        // 重畫點點
+        resetMarkers();
     }
 
     @Override
@@ -143,13 +153,6 @@ public class MapFragment extends BaseFragment implements LocationListener {
         latitude = myLocation.getLatitude();
         longitude = myLocation.getLongitude();
 
-        // 把自己加進去
-        Marker marker = mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(latitude, longitude))
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_green))
-                .title("Suzy"));
-        mMarker.put("Suzy", marker);
-
         // Show the current location in Google Map
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
 
@@ -158,7 +161,93 @@ public class MapFragment extends BaseFragment implements LocationListener {
 
         //服務提供者、更新頻率60000毫秒=1分鐘、最短距離、地點改變時呼叫物件
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, this);
+    }
 
+    public void resetMarkers() {
+        // 清空地圖
+        mMap.clear();
+
+        //
+        getGroupsFromMember();
+    }
+
+    public void getGroupsFromMember(){
+        this.apiMethod = "getGroupsFromMember";
+        new API().getGroupsFromMember(getActivity(), UserProfile.getInstance().id, this.getEventBus());
+    }
+
+    public void getMembersFromGroups(String[] groups){
+        this.apiMethod = "getMembersFromGroups";
+        new API().getMembersFromGroups(getActivity(), groups, this.getEventBus());
+    }
+
+    public void addMarker(String name, String lat, String lng) {
+        Marker marker;
+        if (mMarker.containsKey(name)) {
+            // update marker
+            marker = mMarker.get(name);
+            marker.setPosition(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)));
+        } else {
+            // add marker
+            marker = mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_green))
+                    .title(name));
+            mMarker.put(name, marker);
+        }
+    }
+
+    @Override
+    public void onEventMainThread(API.ReturnDataEvent dma) {
+        if(this.apiMethod == "getGroupsFromMember"){
+            Log.e("return data [getGroupsFromMember]", dma.data.toString());
+
+            try {
+                JSONArray groupsArray = dma.data.getJSONArray("data");
+                String[] groupStrArray = new String[groupsArray.length()];
+                for(int i=0; i < groupsArray.length(); i++){
+                    JSONObject group = groupsArray.getJSONObject(i);
+                    groupStrArray[i] =  group.getString("name");
+                }
+                getMembersFromGroups(groupStrArray);
+                //String[] groups = {"group1", "group2", "group3"};
+                //getMembersFromGroups(groups);
+            } catch (Exception e) {
+
+            }
+
+        } else if(this.apiMethod == "getMembersFromGroups") {
+            Log.e("return data [getMembersFromGroups]", dma.data.toString());
+
+            try {
+                JSONArray groupsArray = dma.data.getJSONArray("data");
+                String[] groupStrArray = new String[groupsArray.length()];
+                for(int i=0; i < groupsArray.length(); i++){
+                    JSONObject group = groupsArray.getJSONObject(i);
+                    //groupStrArray[i] = group.getString("name");
+                    JSONArray membersArray = group.getJSONArray("members");
+                    for(int j=0; j < membersArray.length(); j++){
+                        JSONObject member = membersArray.getJSONObject(j);
+                        addMarker(member.getString("name"), member.getString("lat"), member.getString("lng"));
+                    }
+
+                }
+
+            } catch (Exception e) {
+            }
+
+        } else {
+            Log.e("return data", dma.data.toString());
+        }
+    }
+
+    @Override
+    public void onEventMainThread(LocationSyncroner.LocationEvent le) {
+        //Log.e("return data member", le.member);
+        //Log.e("return data lat", le.newLat);
+        //Log.e("return data lng", le.newLng);
+
+        addMarker(le.member, le.newLat, le.newLng);
     }
 
     @Override
@@ -194,31 +283,4 @@ public class MapFragment extends BaseFragment implements LocationListener {
         //status=OUT_OF_SERVICE 供應商停止服務
         //status=TEMPORARILY_UNAVAILABLE 供應商暫停服務
     }
-
-    @Override
-    public void onEventMainThread(API.ReturnDataEvent dma) {
-        Log.e("return data", dma.data.toString());
-    }
-
-    @Override
-    public void onEventMainThread(LocationSyncroner.LocationEvent le) {
-        Log.e("return data member", le.member);
-        Log.e("return data lat", le.newLat);
-        Log.e("return data lng", le.newLng);
-
-        Marker marker;
-        if (mMarker.containsKey(le.member)) {
-            // update marker
-            marker = mMarker.get(le.member);
-            marker.setPosition(new LatLng(Double.parseDouble(le.newLat), Double.parseDouble(le.newLng)));
-        } else {
-            // add marker
-            marker = mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(Double.parseDouble(le.newLat), Double.parseDouble(le.newLng)))
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_green))
-                    .title(le.member));
-            mMarker.put(le.member, marker);
-        }
-    }
-
 }
