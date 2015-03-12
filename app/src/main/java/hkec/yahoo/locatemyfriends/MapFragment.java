@@ -172,9 +172,6 @@ public class MapFragment extends BaseFragment implements LocationListener {
         //Double latitude = myLocation.getLatitude();
         //Double longitude = myLocation.getLongitude();
 
-        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-        Toast.makeText(getActivity(), "Time: " + currentDateTimeString + " Place: (" + latitude + "," + longitude + ")", Toast.LENGTH_LONG).show();
-
         try {
             LocationSyncroner.updateMyLocation(UserProfile.getInstance().id, String.valueOf(latitude), String.valueOf(longitude));
         } catch (JSONException e) {
