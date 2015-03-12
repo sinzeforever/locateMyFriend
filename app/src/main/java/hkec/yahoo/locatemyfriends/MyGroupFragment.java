@@ -51,7 +51,7 @@ public class MyGroupFragment extends BaseFragment{
         // bind group list array adapter
         int listSize = UserProfile.getInstance().groupList.values().size();
         GroupObject[] groupList = (GroupObject [])UserProfile.getInstance().groupList.values().toArray(new GroupObject[listSize]);
-        groupListAdapter = new GroupListAdapter(getActivity().getApplicationContext(), R.layout.group_list_entry, groupList);
+        groupListAdapter = new GroupListAdapter(getActivity(), R.layout.group_list_entry, groupList);
         groupListView = (ListView) rootView.findViewById(R.id.groupList);
         groupListView.setAdapter(groupListAdapter);
     }

@@ -13,6 +13,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import de.greenrobot.event.EventBus;
+import demo.android.jonaswu.yahoo.com.hackday_demo_lib.API;
+
 
 public class LoginActivity extends ActionBarActivity {
 
@@ -21,12 +24,18 @@ public class LoginActivity extends ActionBarActivity {
     private TextView errorMsg;
     private String loginId;
     private Context context;
+    private EventBus eventBus;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.context = this;
         setContentView(R.layout.login);
         setElements();
+    }
+
+    private void setEventBus() {
+        eventBus = new EventBus();
+        eventBus.register(this);
     }
 
     private void setElements() {
@@ -72,6 +81,8 @@ public class LoginActivity extends ActionBarActivity {
 
     private void doLogin() {
         // call api
+        String[] apiParam = {loginId};
+        new API().addMembers(this, apiParam, eventBus);
         // create user model
         createUserModel(loginId);
         // bind sucket

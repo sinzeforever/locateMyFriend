@@ -2,7 +2,6 @@ package hkec.yahoo.locatemyfriends;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.os.Handler;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import de.greenrobot.event.EventBus;
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.API;
@@ -35,9 +35,14 @@ public class AddGroupFragment extends BaseFragment{
     private ViewGroup memberListLayout;
     private View rootView;
     private MainActivity mainActivity;
-    private HashMap<String, MemberObject> tmpMemberList;
-    private boolean isValidGroup = false;
+    private ArrayList<String> tmpMemberList;
+    private String tmpGroupName;
     private EventBus eventBus;
+    private int currentAPI;
+    private final int API_NONE = 0;
+    private final int API_CREATE_GROUP = 1;
+    private final int API_ADD_MEMBERS_TO_GROUP = 2;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,7 +59,7 @@ public class AddGroupFragment extends BaseFragment{
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         this.mainActivity = (MainActivity) getActivity();
-        tmpMemberList = new HashMap<String, MemberObject>();
+        tmpMemberList = new ArrayList<String>();
         eventBus = new EventBus();
         eventBus.register(this);
         setElements();
@@ -93,20 +98,15 @@ public class AddGroupFragment extends BaseFragment{
     }
 
     public void clickConfirmButton() {
+        tmpGroupName = groupNameInput.getText().toString();
         if (validateCreateGroup()) {
-            doCreateGroup();
-            Handler handler = new Handler();
-            // delay and back to my group page
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    mainActivity.setMyGroupPage();
-                }
-            }, 1000);
+            //call api to create group
+            callCreateGroupAPI();
         }
     }
 
     public boolean validateCreateGroup() {
-        if (groupNameInput.getText().toString().length() == 0) {
+        if (tmpGroupName.length() == 0) {
             mainActivity.makeToast("Please enter group name");
             return false;
         } else if (tmpMemberList.size() == 0){
@@ -117,11 +117,57 @@ public class AddGroupFragment extends BaseFragment{
         }
     }
 
-    public void doCreateGroup() {
-        //call api to create group
-        String[] groupParam = {groupNameInput.getText().toString()};
-        new API().addGroups(getActivity(), groupParam, eventBus);
+    public void callCreateGroupAPI() {
+        currentAPI = API_CREATE_GROUP;
+        String[] apiParam = {groupNameInput.getText().toString()};
+        new API().addGroups(getActivity(), apiParam, eventBus);
+    }
+
+    public void callAddMemberToGroupAPI() {
+
+        // add the user himself into the tmp member list
+        tmpMemberList.add(UserProfile.getInstance().id);
+
+        // parse param
+        String[] apiParam = new String[tmpMemberList.size()];
+        tmpMemberList.toArray(apiParam);
+
+        // call api
+        currentAPI = API_ADD_MEMBERS_TO_GROUP;
+        new API().addMembersToGroup(getActivity(), tmpGroupName, apiParam, eventBus);
+    }
+
+    public void createGroupAPICallback(String response) {
+
+        if (Util.getAPIResponseStatus(response)) {
+            postCreateGroup();
+        } else {
+            mainActivity.makeToast("Error parsing api when creating group");
+        }
+    }
+
+    public void addMemberToGroupAPICallback(String response) {
+        if (Util.getAPIResponseStatus(response)) {
+            postAddMemberToGroup();
+        } else {
+            mainActivity.makeToast("Error parsing api when add members to group ");
+        }
+    }
+
+    public void postCreateGroup() {
+        currentAPI = API_NONE;
+        callAddMemberToGroupAPI();
+    }
+
+    public void postAddMemberToGroup() {
         mainActivity.makeToast("Successfully create group");
+        Handler handler = new Handler();
+        // delay and back to my group page
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                mainActivity.setMyGroupPage();
+            }
+        }, 1000);
     }
 
     public void clickAddMemberButton() {
@@ -139,7 +185,7 @@ public class AddGroupFragment extends BaseFragment{
 
     public void addMemberToTmpGroup(String memberId) {
         // put member in tmp list
-        tmpMemberList.put(memberId, new MemberObject(memberId));
+        tmpMemberList.add(memberId);
         // show member in view entry
         showNewUserInTheList(memberId);
         // change the group member count
@@ -185,6 +231,11 @@ public class AddGroupFragment extends BaseFragment{
     @Override
     public void onEventMainThread(API.ReturnDataEvent dma) {
         Log.e("return data", dma.data.toString());
+        if (currentAPI == API_CREATE_GROUP) {
+            createGroupAPICallback(dma.data.toString());
+        } else if (currentAPI == API_ADD_MEMBERS_TO_GROUP) {
+            addMemberToGroupAPICallback(dma.data.toString());
+        }
     }
 
     @Override

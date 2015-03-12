@@ -8,14 +8,14 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingTop="15dp"
-        android:paddingBottom="15dp"
+        android:paddingBottom="25dp"
         android:weightSum="1"
         android:orientation="horizontal"
-        android:id="@+id/groupListLayout"
+        android:id="@+id/memberListLayout"
         android:clickable="true"
         android:gravity="center_vertical">
         <CheckBox
-            android:id="@+id/groupVisibility"
+            android:id="@+id/memberVisibility"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_alignParentLeft="true"
@@ -23,15 +23,15 @@
             android:checked="true" />
 
         <TextView
-            android:id="@+id/groupName"
+            android:id="@+id/memberName"
             android:layout_height="wrap_content"
             android:layout_width="120dp"
             android:text="User1"
             android:textSize="20dp"
             android:textColor="@color/dark_gray"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/groupVisibility"
-            android:layout_toEndOf="@+id/groupVisibility"
+            android:layout_toRightOf="@+id/memberVisibility"
+            android:layout_toEndOf="@+id/memberVisibility"
             android:layout_marginLeft="27dp"
             android:layout_marginStart="37dp" />
 

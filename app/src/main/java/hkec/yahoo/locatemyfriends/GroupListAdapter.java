@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
@@ -39,6 +40,7 @@ public class GroupListAdapter extends ArrayAdapter<GroupObject> {
             viewHolder.groupName = (TextView) convertView.findViewById(R.id.groupName);
             viewHolder.groupMemberCount = (TextView) convertView.findViewById(R.id.groupMemberCount);
             viewHolder.groupVisibility = (CheckBox) convertView.findViewById(R.id.groupVisibility);
+            viewHolder.groupWrapper = (RelativeLayout) convertView.findViewById(R.id.groupWrapper);
             convertView.setTag(viewHolder);
         } else {
             // show a existing row view
@@ -62,6 +64,14 @@ public class GroupListAdapter extends ArrayAdapter<GroupObject> {
             }
         });
 
+        viewHolder.groupWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GroupObject targetGroup = list[position];
+                ((MainActivity) context).setGroupMemberPage(targetGroup);
+            }
+        });
+
         return convertView;
     }
 
@@ -69,6 +79,7 @@ public class GroupListAdapter extends ArrayAdapter<GroupObject> {
         CheckBox groupVisibility;
         TextView groupName;
         TextView groupMemberCount;
+        RelativeLayout groupWrapper;
     }
 
 }
