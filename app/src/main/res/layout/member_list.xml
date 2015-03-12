@@ -1,0 +1,32 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/memberListGroupName"
+        android:layout_gravity="center_horizontal"
+        android:background="#0D0D01"
+        android:gravity="center"
+        android:textSize="18dp"
+        android:textColor="#ffffff"
+        android:text="Group Name"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp" />
+    <TextView
+        android:layout_width="170dp"
+        android:layout_height="30dp"
+        android:gravity="left"
+        android:text="Members"
+        android:id="@+id/memberListMsg"
+        android:layout_marginTop="48dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/memberListMsg"
+        android:textColor="@color/dark_gray"
+        android:textSize="25dp" />
+    <ListView
+        android:id="@+id/memberList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
