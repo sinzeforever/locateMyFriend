@@ -12,6 +12,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.API;
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.BaseFragment;
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.LocationSyncroner;
@@ -35,8 +38,9 @@ public class GroupMemberFragment extends BaseFragment {
     private String newMemberId;
     private int currentAPI = 0;
     private final int API_NONE = 0;
-    private final int API_ADD_MEMBER = 1;
-    private final int API_LEAVE_GROUP = 2;
+    private final int API_GET_GROUP_MEMBERS = 1;
+    private final int API_ADD_MEMBER = 2;
+    private final int API_LEAVE_GROUP = 3;
 
     public void setGroup(GroupObject group) {
         this.group = group;
@@ -57,8 +61,8 @@ public class GroupMemberFragment extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         this.mainActivity = (MainActivity) getActivity();
+        callGetGroupMembersAPI();
         setTitle();
-        setListView();
         setBackButton();
         setAddMember();
         setLeaveGroupButton();
@@ -97,6 +101,40 @@ public class GroupMemberFragment extends BaseFragment {
                 callLeaveGroupAPI();
             }
         });
+    }
+
+    public void callGetGroupMembersAPI() {
+        if (currentAPI != API_NONE) {
+            return;
+        }
+        currentAPI = API_GET_GROUP_MEMBERS;
+        new API().getMembersFromGroup(mainActivity, group.name, getEventBus());
+    }
+
+    public void postGetGroupMembersAPI(String response) {
+        // parse JSON data and put all the member into the list
+        parseGroupMembersJSONData(response);
+
+        // set title
+        setTitle();
+
+        // set list
+        setListView();
+    }
+
+    public void parseGroupMembersJSONData(String response) {
+        JSONArray memberJSONArray = Util.getAPIResponseArrayData(response);
+        if (memberJSONArray != null) {
+            try {
+                for (int i = 0; i < memberJSONArray.length(); i++) {
+                    String memberName = new JSONObject(memberJSONArray.getString(i)).getString("name");
+                    Log.d("myLog", memberName);
+                    group.memberList.put(memberName, new MemberObject(memberName));
+                }
+            } catch (Exception e) {
+                Log.d("myLog", "Fail to parse get-group-members API data");
+            }
+        }
     }
 
     public void callLeaveGroupAPI() {
@@ -141,9 +179,13 @@ public class GroupMemberFragment extends BaseFragment {
     }
 
     public void setTitle() {
-        if (group != null) {
+        if (titleView == null) {
             titleView = (TextView) rootView.findViewById(R.id.memberListGroupName);
+        }
+        if (group.memberList.size() > 0) {
             titleView.setText(group.name + " (" + group.memberList.size() + ")");
+        } else {
+            titleView.setText(group.name);
         }
     }
 
@@ -159,7 +201,13 @@ public class GroupMemberFragment extends BaseFragment {
     }
     @Override
     public void onEventMainThread(API.ReturnDataEvent dma) {
-        if (currentAPI == API_ADD_MEMBER) {
+        if (currentAPI == API_GET_GROUP_MEMBERS) {
+            if (Util.getAPIResponseStatus(dma.data.toString())) {
+                postGetGroupMembersAPI(dma.data.toString());
+            } else {
+                mainActivity.makeToast("Fail to get group members");
+            }
+        } else if (currentAPI == API_ADD_MEMBER) {
             if (Util.getAPIResponseStatus(dma.data.toString())) {
                 postAddGroupToMemberAPI();
             } else {

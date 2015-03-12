@@ -121,8 +121,8 @@ public class MyGroupFragment extends BaseFragment{
         }
     }
 
-    public GroupObject[] parseGroupListJSONData(String reponse) {
-        JSONArray groupJSONArray = Util.getAPIResponseArrayData(reponse);
+    public GroupObject[] parseGroupListJSONData(String response) {
+        JSONArray groupJSONArray = Util.getAPIResponseArrayData(response);
         ArrayList<GroupObject> groupList = new ArrayList<GroupObject>();
         if (groupJSONArray != null) {
             try {

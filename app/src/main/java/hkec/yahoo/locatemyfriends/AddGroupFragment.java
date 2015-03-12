@@ -126,11 +126,16 @@ public class AddGroupFragment extends BaseFragment{
         new API().addGroups(getActivity(), apiParam, eventBus);
     }
 
+    public void postCreateGroup() {
+        currentAPI = API_NONE;
+        callAddMemberToGroupAPI();
+    }
+
     public void callAddMemberToGroupAPI() {
+
         if (currentAPI != API_NONE) {
             return;
         }
-
         // add the user himself into the tmp member list
         tmpMemberList.add(UserProfile.getInstance().id);
 
@@ -143,28 +148,9 @@ public class AddGroupFragment extends BaseFragment{
         new API().addMembersToGroup(getActivity(), tmpGroupName, apiParam, eventBus);
     }
 
-    public void createGroupAPICallback(String response) {
-
-        if (Util.getAPIResponseStatus(response)) {
-            postCreateGroup();
-        } else {
-            mainActivity.makeToast("Error parsing api when creating group");
-        }
-    }
-
-    public void addMemberToGroupAPICallback(String response) {
-        if (Util.getAPIResponseStatus(response)) {
-            postAddMemberToGroup();
-        } else {
-            mainActivity.makeToast("Error parsing api when add members to group ");
-        }
-    }
-
-    public void postCreateGroup() {
-        callAddMemberToGroupAPI();
-    }
 
     public void postAddMemberToGroup() {
+        currentAPI = API_NONE;
         mainActivity.makeToast("Successfully create group");
         Handler handler = new Handler();
         // delay and back to my group page
@@ -172,7 +158,7 @@ public class AddGroupFragment extends BaseFragment{
             public void run() {
                 mainActivity.setMyGroupPage();
             }
-        }, 1000);
+        }, 500);
     }
 
     public void clickAddMemberButton() {
@@ -237,11 +223,20 @@ public class AddGroupFragment extends BaseFragment{
     public void onEventMainThread(API.ReturnDataEvent dma) {
         Log.e("return data", dma.data.toString());
         if (currentAPI == API_CREATE_GROUP) {
-            createGroupAPICallback(dma.data.toString());
-        } else if (currentAPI == API_ADD_MEMBERS_TO_GROUP) {
-            addMemberToGroupAPICallback(dma.data.toString());
+            if (Util.getAPIResponseStatus(dma.data.toString())) {
+                postCreateGroup();
+            } else {
+                mainActivity.makeToast("Error parsing api when creating group");
+            }
         }
-        currentAPI = API_NONE;
+        else if (currentAPI == API_ADD_MEMBERS_TO_GROUP) {
+             Log.d("myLog", "add m ca ");
+            if (Util.getAPIResponseStatus(dma.data.toString())) {
+                postAddMemberToGroup();
+            } else {
+                mainActivity.makeToast("Error parsing api when add members to group ");
+            }
+        }
     }
 
     @Override
