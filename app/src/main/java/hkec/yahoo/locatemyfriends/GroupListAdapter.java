@@ -82,5 +82,4 @@ public class GroupListAdapter extends ArrayAdapter<GroupObject> {
         TextView groupMemberCount;
         RelativeLayout groupWrapper;
     }
-
 }
