@@ -1,5 +1,6 @@
 package hkec.yahoo.locatemyfriends;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,9 +20,11 @@ public class LoginActivity extends ActionBarActivity {
     private EditText idInput;
     private TextView errorMsg;
     private String loginId;
+    private Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.context = this;
         setContentView(R.layout.login);
         setElements();
     }
@@ -34,6 +38,16 @@ public class LoginActivity extends ActionBarActivity {
             }
         });
         idInput = (EditText) findViewById(R.id.idInput);
+        idInput.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    // code to execute when EditText loses focus
+                    // hide keyboard
+                    Util.hideKeyBoard(context);
+                }
+            }
+        });
         errorMsg = (TextView) findViewById(R.id.errorMsg);
     }
 
@@ -46,8 +60,6 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     private void checkLogin() {
-        // hide keyboard
-        Util.hideKeyBoard(this);
 
         loginId = idInput.getText().toString();
         if (!verifyId(loginId)) {
@@ -65,7 +77,6 @@ public class LoginActivity extends ActionBarActivity {
         // bind sucket
         // swap to main page
         Log.d("myLog", "login as : " + loginId);
-        Util.hideKeyBoard(this);
         Intent intent = new Intent();
         intent.setClass(LoginActivity.this, MainActivity.class);
         startActivity(intent);
