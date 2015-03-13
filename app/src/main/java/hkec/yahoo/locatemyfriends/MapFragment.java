@@ -191,7 +191,11 @@ public class MapFragment extends BaseFragment implements LocationListener {
             // update marker
             marker = mMarker.get(name);
             marker.setPosition(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)));
+
         } else {
+
+            Log.e("######### new add marker", name + ", " + imageUrl);
+
             // add marker
             Bitmap.Config conf = Bitmap.Config.ARGB_8888;
             Bitmap bmp = Bitmap.createBitmap(80, 80, conf);
@@ -224,7 +228,10 @@ public class MapFragment extends BaseFragment implements LocationListener {
                     String[] groupStrArray = new String[groupsArray.length()];
                     for(int i=0; i < groupsArray.length(); i++){
                         JSONObject group = groupsArray.getJSONObject(i);
-                        groupStrArray[i] =  group.getString("name");
+                        if (group.getString("visible").equals("true")) {
+                            groupStrArray[i] =  group.getString("name");
+                        }
+
                     }
                     getMembersFromGroups(groupStrArray);
                 }
@@ -247,7 +254,7 @@ public class MapFragment extends BaseFragment implements LocationListener {
                     JSONArray membersArray = group.getJSONArray("members");
                     for(int j=0; j < membersArray.length(); j++){
                         JSONObject member = membersArray.getJSONObject(j);
-                        addMarker(member.getString("name"), member.getString("lat"), member.getString("lng"), member.getString("imageUrl"));
+                        addMarker(member.getString("name"), member.getString("lat"), member.getString("lng"), member.getString("image"));
                     }
 
                 }
@@ -267,6 +274,7 @@ public class MapFragment extends BaseFragment implements LocationListener {
         //Log.e("return data lng", le.newLng);
 
         addMarker(le.member, le.newLat, le.newLng, le.imageUrl);
+
     }
 
     @Override
@@ -274,11 +282,11 @@ public class MapFragment extends BaseFragment implements LocationListener {
         // TODO Auto-generated method stub
 
         // 更新自己所在位置
-        //latitude = latitude + 0.0005;
-        //longitude = longitude + 0.0001;
+        latitude = latitude + 0.0005;
+        longitude = longitude + 0.0001;
 
-        Double latitude = myLocation.getLatitude();
-        Double longitude = myLocation.getLongitude();
+        //Double latitude = myLocation.getLatitude();
+        //Double longitude = myLocation.getLongitude();
 
         try {
             LocationSyncroner.updateMyLocation(UserProfile.getInstance().id, String.valueOf(latitude), String.valueOf(longitude), "user0");
