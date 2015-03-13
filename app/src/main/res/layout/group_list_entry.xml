@@ -19,13 +19,13 @@
             android:layout_width="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:checked="true" />
+            android:checked="true"
+            android:paddingRight="20dp" />
 
         <RelativeLayout
             android:id="@+id/groupWrapper"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:layout_toRightOf="@+id/groupVisibility"
             android:layout_toEndOf="@+id/groupVisibility">
             <TextView
                 android:id="@+id/groupName"
@@ -34,9 +34,7 @@
                 android:text="Group1"
                 android:textSize="20dp"
                 android:textColor="@color/dark_gray"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="17dp"
-                android:layout_marginStart="37dp" />
+                android:layout_centerVertical="true"/>
 
             <ImageView
                 android:layout_width="20dp"
@@ -46,18 +44,8 @@
                 android:layout_weight="0.07"
                 android:alpha="0.7"
                 android:layout_marginRight="8dp"
-                android:visibility="gone"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/groupMemberCount"/>
-            <TextView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:id="@+id/groupColor"
-                android:layout_weight="0.07"
-                android:background="@color/main_orange"
-                android:layout_marginRight="20dp"
-                android:layout_toLeftOf="@+id/rightArrow"
-                android:layout_centerVertical="true" />
 
             <TextView
                 android:layout_width="30dp"
@@ -67,9 +55,18 @@
                 android:textColor="@color/dark_gray"
                 android:layout_centerVertical="true"
                 android:text="5"
-                android:layout_marginRight="15dp"
-                android:visibility="gone"
-                android:layout_toLeftOf="@+id/rightArrow"/>
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/groupColor"/>
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/groupColor"
+                android:layout_weight="0.07"
+                android:background="@color/main_orange"
+                android:layout_marginRight="20dp"
+                android:layout_toLeftOf="@+id/rightArrow"
+                android:layout_centerVertical="true" />
             <ImageView
                 android:id="@+id/rightArrow"
                 android:layout_width="20dp"

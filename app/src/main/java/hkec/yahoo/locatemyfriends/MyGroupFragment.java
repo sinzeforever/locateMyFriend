@@ -141,10 +141,15 @@ public class MyGroupFragment extends BaseFragment{
         if (groupJSONArray != null) {
             try {
                 for (int i = 0; i < groupJSONArray.length(); i++) {
-                    String tmpGroupName = new JSONObject(groupJSONArray.getString(i)).getString("name");
-                    boolean tmpVisibility = new JSONObject(groupJSONArray.getString(i)).getBoolean("visible");
+                    JSONObject groupJSONObject = new JSONObject(groupJSONArray.getString(i));
+                    String tmpGroupName = groupJSONObject.getString("name");
+                    boolean tmpVisibility = groupJSONObject.getBoolean("visible");
+                    int tmpMemberCount = groupJSONObject.getInt("count");
+
+                    // create a new group object and set value
                     GroupObject tmpGroup = new GroupObject(tmpGroupName);
                     tmpGroup.visibility = tmpVisibility;
+                    tmpGroup.memberCount = tmpMemberCount;
                     groupList.add(tmpGroup);
 
                 }

@@ -10,6 +10,7 @@ public class GroupObject {
     public HashMap<String,MemberObject> memberList;
     public String color;
     public boolean visibility;
+    public int memberCount = 0;
 
     public GroupObject(String name) {
         this.name = name;
