@@ -91,11 +91,12 @@ public class MapFragment extends BaseFragment implements LocationListener {
             e.printStackTrace();
         }
 
-        super.onResume();
+
         setUpMapIfNeeded();
 
         // 重畫點點
         resetMarkers();
+        super.onResume();
     }
 
     @Override
@@ -204,13 +205,16 @@ public class MapFragment extends BaseFragment implements LocationListener {
     public void addMarker(String name, String lat, String lng, String imageUrl) {
         Marker marker;
         if (mMarker.containsKey(name)) {
+
+            Log.e("######### update marker", name);
+
             // update marker
             marker = mMarker.get(name);
             marker.setPosition(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)));
 
         } else {
 
-            Log.e("######### new add marker", name + ", " + imageUrl);
+            Log.e("######### add marker", name);
 
             // add marker
             Bitmap.Config conf = Bitmap.Config.ARGB_8888;
@@ -244,7 +248,7 @@ public class MapFragment extends BaseFragment implements LocationListener {
                     String[] groupStrArray = new String[groupsArray.length()];
                     for (int i = 0; i < groupsArray.length(); i++) {
                         JSONObject group = groupsArray.getJSONObject(i);
-                        if (group.getString("visible").equals("true")) {
+                        if (group.getBoolean("visible")) {
                             groupStrArray[i] = group.getString("name");
                         }
 
@@ -265,17 +269,21 @@ public class MapFragment extends BaseFragment implements LocationListener {
                 JSONArray groupsArray = dma.data.getJSONArray("data");
                 String[] groupStrArray = new String[groupsArray.length()];
                 for (int i = 0; i < groupsArray.length(); i++) {
+
+
                     JSONObject group = groupsArray.getJSONObject(i);
                     //groupStrArray[i] = group.getString("name");
+
                     JSONArray membersArray = group.getJSONArray("members");
                     for (int j = 0; j < membersArray.length(); j++) {
                         JSONObject member = membersArray.getJSONObject(j);
-                        addMarker(member.getString("name"), member.getString("lat"), member.getString("lng"), member.getString("image"));
-                    }
 
+                        addMarker(member.getString("name"), member.getString("lat"), member.getString("lng"), member.getString("imageUrl"));
+                    }
                 }
 
             } catch (Exception e) {
+                e.printStackTrace();
             }
 
         } else {
@@ -298,11 +306,11 @@ public class MapFragment extends BaseFragment implements LocationListener {
         // TODO Auto-generated method stub
 
         // 更新自己所在位置
-        latitude = latitude + 0.0005;
-        longitude = longitude + 0.0001;
+        //latitude = latitude + 0.0005;
+        //longitude = longitude + 0.0001;
 
-        //Double latitude = myLocation.getLatitude();
-        //Double longitude = myLocation.getLongitude();
+        Double latitude = myLocation.getLatitude();
+        Double longitude = myLocation.getLongitude();
 
         try {
             LocationSyncroner.updateMyLocation(UserProfile.getInstance().id, String.valueOf(latitude), String.valueOf(longitude), "user0");
