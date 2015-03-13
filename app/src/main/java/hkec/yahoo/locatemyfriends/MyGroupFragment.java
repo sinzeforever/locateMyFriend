@@ -88,6 +88,10 @@ public class MyGroupFragment extends BaseFragment{
     public void disableAllGroup() {
         // reload the list
         setListView();
+        // close all checkbox on the view
+        for(int i=0; i<groupList.length; i++) {
+            groupList[i].visibility = false;
+        }
         callDisableAllGroupAPI();
     }
 
