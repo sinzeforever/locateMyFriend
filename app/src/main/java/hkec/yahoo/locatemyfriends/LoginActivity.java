@@ -15,9 +15,12 @@ import android.widget.TextView;
 
 import de.greenrobot.event.EventBus;
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.API;
+import demo.android.jonaswu.yahoo.com.hackday_demo_lib.EventBusRegistrable;
+
+import static demo.android.jonaswu.yahoo.com.hackday_demo_lib.API.ReturnDataEvent;
 
 
-public class LoginActivity extends ActionBarActivity {
+public class LoginActivity extends ActionBarActivity implements EventBusRegistrable, API.DataHandler {
 
     private Button confirmButton;
     private EditText idInput;
@@ -25,11 +28,13 @@ public class LoginActivity extends ActionBarActivity {
     private String loginId;
     private Context context;
     private EventBus eventBus;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.context = this;
         setContentView(R.layout.login);
+        setEventBus();
         setElements();
     }
 
@@ -83,15 +88,6 @@ public class LoginActivity extends ActionBarActivity {
         // call api
         String[] apiParam = {loginId};
         new API().addMembers(this, apiParam, eventBus);
-        // create user model
-        createUserModel(loginId);
-        // bind sucket
-        // swap to main page
-        Log.d("myLog", "login as : " + loginId);
-        Intent intent = new Intent();
-        intent.setClass(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     private void createUserModel(String id) {
@@ -118,5 +114,24 @@ public class LoginActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
+    @Override
+    public void onEventMainThread(ReturnDataEvent dma) {
+        String[] apiParam = {loginId};
+        // create user model
+        createUserModel(loginId);
+        // bind sucket
+        // swap to main page
+        Log.d("myLog", "login as : " + loginId);
+        Intent intent = new Intent();
+        intent.setClass(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

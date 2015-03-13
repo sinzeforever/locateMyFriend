@@ -17,6 +17,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -30,11 +31,13 @@ import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.API;
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.BaseFragment;
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.LocationSyncroner;
+
 import com.squareup.picasso.Picasso;
 
 
@@ -51,6 +54,7 @@ public class MapFragment extends BaseFragment implements LocationListener {
     Double latitude, longitude;
 
     private String apiMethod = "";
+    private static float previousZoomLevel = 15;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -121,6 +125,13 @@ public class MapFragment extends BaseFragment implements LocationListener {
             // Try to obtain the map from the SupportMapFragment.
             mMap = ((SupportMapFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
+            mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+                @Override
+                public void onCameraChange(CameraPosition position) {
+                    Log.d("Zoom", "Zoom: " + position.zoom);
+                    previousZoomLevel = position.zoom;
+                }
+            });
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
                 setUpMap();
@@ -152,25 +163,27 @@ public class MapFragment extends BaseFragment implements LocationListener {
         //Location myLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         Location myLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-        latitude = myLocation.getLatitude();
-        longitude = myLocation.getLongitude();
-
-        // Show the current location in Google Map
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
-
+        if (myLocation != null) {
+            latitude = myLocation.getLatitude();
+            longitude = myLocation.getLongitude();
+            // Show the current location in Google Map
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
+        } else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(121.6212150797775, 25.056027960549997)));
+        }
         // Zoom in the Google Map
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(14));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(previousZoomLevel));
 
         //服務提供者、更新頻率60000毫秒=1分鐘、最短距離、地點改變時呼叫物件
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, this);
     }
 
-    public void getGroupsFromMember(){
+    public void getGroupsFromMember() {
         this.apiMethod = "getGroupsFromMember";
         new API().getGroupsFromMember(getActivity(), UserProfile.getInstance().id, this.getEventBus());
     }
 
-    public void getMembersFromGroups(String[] groups){
+    public void getMembersFromGroups(String[] groups) {
         this.apiMethod = "getMembersFromGroups";
         new API().getMembersFromGroups(getActivity(), groups, this.getEventBus());
     }
@@ -178,8 +191,11 @@ public class MapFragment extends BaseFragment implements LocationListener {
     // 重設 marker
     public void resetMarkers() {
         // 清空地圖
-        mMap.clear();
+        //mMap.clear();
 
+        if (mMap != null)
+            mMap.clear();
+        mMarker.clear();
         //
         getGroupsFromMember();
     }
@@ -202,9 +218,9 @@ public class MapFragment extends BaseFragment implements LocationListener {
 
             marker = mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)))
-                        //.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_green))
-                        .icon(BitmapDescriptorFactory.fromBitmap(bmp))
-                        .title(name));
+                            //.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_green))
+                    .icon(BitmapDescriptorFactory.fromBitmap(bmp))
+                    .title(name));
 
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 Picasso.with(getActivity()).load("https://s.yimg.com/qs/auc/hackday/userphoto/" + imageUrl + ".png").into(new PicassoMarker(marker));
@@ -219,17 +235,17 @@ public class MapFragment extends BaseFragment implements LocationListener {
 
     @Override
     public void onEventMainThread(API.ReturnDataEvent dma) {
-        if(this.apiMethod == "getGroupsFromMember"){
+        if (this.apiMethod == "getGroupsFromMember") {
             Log.e("return data [getGroupsFromMember]", dma.data.toString());
 
             try {
                 JSONArray groupsArray = dma.data.getJSONArray("data");
                 if (groupsArray.length() > 0) {
                     String[] groupStrArray = new String[groupsArray.length()];
-                    for(int i=0; i < groupsArray.length(); i++){
+                    for (int i = 0; i < groupsArray.length(); i++) {
                         JSONObject group = groupsArray.getJSONObject(i);
                         if (group.getString("visible").equals("true")) {
-                            groupStrArray[i] =  group.getString("name");
+                            groupStrArray[i] = group.getString("name");
                         }
 
                     }
@@ -242,17 +258,17 @@ public class MapFragment extends BaseFragment implements LocationListener {
 
             }
 
-        } else if(this.apiMethod == "getMembersFromGroups") {
+        } else if (this.apiMethod == "getMembersFromGroups") {
             Log.e("return data [getMembersFromGroups]", dma.data.toString());
 
             try {
                 JSONArray groupsArray = dma.data.getJSONArray("data");
                 String[] groupStrArray = new String[groupsArray.length()];
-                for(int i=0; i < groupsArray.length(); i++){
+                for (int i = 0; i < groupsArray.length(); i++) {
                     JSONObject group = groupsArray.getJSONObject(i);
                     //groupStrArray[i] = group.getString("name");
                     JSONArray membersArray = group.getJSONArray("members");
-                    for(int j=0; j < membersArray.length(); j++){
+                    for (int j = 0; j < membersArray.length(); j++) {
                         JSONObject member = membersArray.getJSONObject(j);
                         addMarker(member.getString("name"), member.getString("lat"), member.getString("lng"), member.getString("image"));
                     }
