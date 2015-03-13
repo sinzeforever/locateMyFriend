@@ -1,6 +1,7 @@
 package hkec.yahoo.locatemyfriends;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,16 +25,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.API;
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.BaseFragment;
 import demo.android.jonaswu.yahoo.com.hackday_demo_lib.LocationSyncroner;
+import com.squareup.picasso.Picasso;
 
 
 /**
@@ -163,14 +165,6 @@ public class MapFragment extends BaseFragment implements LocationListener {
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, this);
     }
 
-    public void resetMarkers() {
-        // 清空地圖
-        mMap.clear();
-
-        //
-        getGroupsFromMember();
-    }
-
     public void getGroupsFromMember(){
         this.apiMethod = "getGroupsFromMember";
         new API().getGroupsFromMember(getActivity(), UserProfile.getInstance().id, this.getEventBus());
@@ -181,7 +175,17 @@ public class MapFragment extends BaseFragment implements LocationListener {
         new API().getMembersFromGroups(getActivity(), groups, this.getEventBus());
     }
 
-    public void addMarker(String name, String lat, String lng) {
+    // 重設 marker
+    public void resetMarkers() {
+        // 清空地圖
+        mMap.clear();
+
+        //
+        getGroupsFromMember();
+    }
+
+    // 新增 marker
+    public void addMarker(String name, String lat, String lng, String imageUrl) {
         Marker marker;
         if (mMarker.containsKey(name)) {
             // update marker
@@ -189,10 +193,22 @@ public class MapFragment extends BaseFragment implements LocationListener {
             marker.setPosition(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)));
         } else {
             // add marker
+            Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+            Bitmap bmp = Bitmap.createBitmap(80, 80, conf);
+
             marker = mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)))
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_green))
-                    .title(name));
+                        //.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_green))
+                        .icon(BitmapDescriptorFactory.fromBitmap(bmp))
+                        .title(name));
+
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                Picasso.with(getActivity()).load("https://s.yimg.com/qs/auc/hackday/userphoto/" + imageUrl + ".png").into(new PicassoMarker(marker));
+            } else {
+                //marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_green));
+                Picasso.with(getActivity()).load("https://s.yimg.com/qs/auc/hackday/userphoto/user9.png").into(new PicassoMarker(marker));
+            }
+
             mMarker.put(name, marker);
         }
     }
@@ -204,12 +220,15 @@ public class MapFragment extends BaseFragment implements LocationListener {
 
             try {
                 JSONArray groupsArray = dma.data.getJSONArray("data");
-                String[] groupStrArray = new String[groupsArray.length()];
-                for(int i=0; i < groupsArray.length(); i++){
-                    JSONObject group = groupsArray.getJSONObject(i);
-                    groupStrArray[i] =  group.getString("name");
+                if (groupsArray.length() > 0) {
+                    String[] groupStrArray = new String[groupsArray.length()];
+                    for(int i=0; i < groupsArray.length(); i++){
+                        JSONObject group = groupsArray.getJSONObject(i);
+                        groupStrArray[i] =  group.getString("name");
+                    }
+                    getMembersFromGroups(groupStrArray);
                 }
-                getMembersFromGroups(groupStrArray);
+
                 //String[] groups = {"group1", "group2", "group3"};
                 //getMembersFromGroups(groups);
             } catch (Exception e) {
@@ -228,7 +247,7 @@ public class MapFragment extends BaseFragment implements LocationListener {
                     JSONArray membersArray = group.getJSONArray("members");
                     for(int j=0; j < membersArray.length(); j++){
                         JSONObject member = membersArray.getJSONObject(j);
-                        addMarker(member.getString("name"), member.getString("lat"), member.getString("lng"));
+                        addMarker(member.getString("name"), member.getString("lat"), member.getString("lng"), member.getString("imageUrl"));
                     }
 
                 }
@@ -247,7 +266,7 @@ public class MapFragment extends BaseFragment implements LocationListener {
         //Log.e("return data lat", le.newLat);
         //Log.e("return data lng", le.newLng);
 
-        addMarker(le.member, le.newLat, le.newLng);
+        addMarker(le.member, le.newLat, le.newLng, le.imageUrl);
     }
 
     @Override
@@ -255,14 +274,14 @@ public class MapFragment extends BaseFragment implements LocationListener {
         // TODO Auto-generated method stub
 
         // 更新自己所在位置
-        latitude = latitude + 0.0005;
-        longitude = longitude + 0.0001;
+        //latitude = latitude + 0.0005;
+        //longitude = longitude + 0.0001;
 
-        //Double latitude = myLocation.getLatitude();
-        //Double longitude = myLocation.getLongitude();
+        Double latitude = myLocation.getLatitude();
+        Double longitude = myLocation.getLongitude();
 
         try {
-            LocationSyncroner.updateMyLocation(UserProfile.getInstance().id, String.valueOf(latitude), String.valueOf(longitude));
+            LocationSyncroner.updateMyLocation(UserProfile.getInstance().id, String.valueOf(latitude), String.valueOf(longitude), "user0");
         } catch (JSONException e) {
             e.printStackTrace();
         }
