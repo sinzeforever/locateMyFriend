@@ -30,6 +30,7 @@ public class MyGroupFragment extends BaseFragment{
     private int currentAPI = 0;
     private final int API_NONE = 0;
     private final int API_GET_GROUP_LIST = 1;
+    private final int API_DISABLE_ALL = 2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,6 +91,18 @@ public class MyGroupFragment extends BaseFragment{
         }
         // reload the list
         setListView();
+        callDisableAllGroupAPI();
+    }
+
+    public void callDisableAllGroupAPI() {
+        if (currentAPI != API_NONE) {
+            return;
+        }
+        String[] groupListStr = new String[groupList.length];
+        for(int i=0; i < groupList.length; i++) {
+            groupListStr[i] = groupList[i].name;
+        }
+        new API().delMemberVisibleToGroups(mainActivity, UserProfile.getInstance().id, groupListStr, getEventBus());
     }
 
     public void callGetGroupAPI() {
@@ -129,7 +142,11 @@ public class MyGroupFragment extends BaseFragment{
             try {
                 for (int i = 0; i < groupJSONArray.length(); i++) {
                     String tmpGroupName = new JSONObject(groupJSONArray.getString(i)).getString("name");
-                    groupList.add(new GroupObject(tmpGroupName));
+                    boolean tmpVisibility = new JSONObject(groupJSONArray.getString(i)).getBoolean("visible");
+                    GroupObject tmpGroup = new GroupObject(tmpGroupName);
+                    tmpGroup.visibility = tmpVisibility;
+                    groupList.add(tmpGroup);
+
                 }
             } catch (Exception e) {
                 Log.d("myLog", "Fail to parse get-group-list API data");
