@@ -2,9 +2,6 @@ package hkec.yahoo.locatemyfriends;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -188,7 +185,7 @@ public class MapFragment extends BaseFragment implements LocationListener {
     }
 
     // 新增 marker
-    public void addMarker(String name, String lat, String lng) {
+    public void addMarker(String name, String lat, String lng, String imageUrl) {
         Marker marker;
         if (mMarker.containsKey(name)) {
             // update marker
@@ -196,8 +193,6 @@ public class MapFragment extends BaseFragment implements LocationListener {
             marker.setPosition(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)));
         } else {
             // add marker
-
-
             Bitmap.Config conf = Bitmap.Config.ARGB_8888;
             Bitmap bmp = Bitmap.createBitmap(80, 80, conf);
 
@@ -207,15 +202,12 @@ public class MapFragment extends BaseFragment implements LocationListener {
                         .icon(BitmapDescriptorFactory.fromBitmap(bmp))
                         .title(name));
 
-            if (name.equals("Pitt") || name.equals("Jolie")  || name.equals("Beckham") || name.equals("Suzy")) {
-                Picasso.with(getActivity()).load("http://gourmet.dodoke.net/icons/" + name + ".png").into(new PicassoMarker(marker));
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                Picasso.with(getActivity()).load("https://s.yimg.com/qs/auc/hackday/userphoto/" + imageUrl + ".png").into(new PicassoMarker(marker));
             } else {
-                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_green));
+                //marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker_green));
+                Picasso.with(getActivity()).load("https://s.yimg.com/qs/auc/hackday/userphoto/user9.png").into(new PicassoMarker(marker));
             }
-
-
-
-
 
             mMarker.put(name, marker);
         }
@@ -255,7 +247,7 @@ public class MapFragment extends BaseFragment implements LocationListener {
                     JSONArray membersArray = group.getJSONArray("members");
                     for(int j=0; j < membersArray.length(); j++){
                         JSONObject member = membersArray.getJSONObject(j);
-                        addMarker(member.getString("name"), member.getString("lat"), member.getString("lng"));
+                        addMarker(member.getString("name"), member.getString("lat"), member.getString("lng"), member.getString("imageUrl"));
                     }
 
                 }
@@ -274,7 +266,7 @@ public class MapFragment extends BaseFragment implements LocationListener {
         //Log.e("return data lat", le.newLat);
         //Log.e("return data lng", le.newLng);
 
-        addMarker(le.member, le.newLat, le.newLng);
+        addMarker(le.member, le.newLat, le.newLng, le.imageUrl);
     }
 
     @Override
@@ -282,14 +274,14 @@ public class MapFragment extends BaseFragment implements LocationListener {
         // TODO Auto-generated method stub
 
         // 更新自己所在位置
-        latitude = latitude + 0.0005;
-        longitude = longitude + 0.0001;
+        //latitude = latitude + 0.0005;
+        //longitude = longitude + 0.0001;
 
-        //Double latitude = myLocation.getLatitude();
-        //Double longitude = myLocation.getLongitude();
+        Double latitude = myLocation.getLatitude();
+        Double longitude = myLocation.getLongitude();
 
         try {
-            LocationSyncroner.updateMyLocation(UserProfile.getInstance().id, String.valueOf(latitude), String.valueOf(longitude));
+            LocationSyncroner.updateMyLocation(UserProfile.getInstance().id, String.valueOf(latitude), String.valueOf(longitude), "user0");
         } catch (JSONException e) {
             e.printStackTrace();
         }
