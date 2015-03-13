@@ -158,7 +158,7 @@ public class AddGroupFragment extends BaseFragment{
             public void run() {
                 mainActivity.setMyGroupPage();
             }
-        }, 500);
+        }, 1200);
     }
 
     public void clickAddMemberButton() {
