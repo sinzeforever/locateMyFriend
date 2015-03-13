@@ -10,11 +10,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import demo.android.jonaswu.yahoo.com.hackday_demo_lib.BaseFragment;
+
 /**
  * Created by sinze on 3/9/15.
  */
 public class MainActivity extends FragmentActivity {
 
+    public BaseFragment currentFragment;
     private int currentPage;
     private ImageView mapButton;
     private ImageView myGroupButton;
@@ -96,7 +99,8 @@ public class MainActivity extends FragmentActivity {
         resetAllButton();
         mapButton.setAlpha(highlightAlpha);
         toast.cancel();
-        setPage((Fragment)(new MapFragment()));
+        currentFragment = new MapFragment();
+        setPage(currentFragment);
     }
 
     public void setMyGroupPage() {
@@ -104,7 +108,8 @@ public class MainActivity extends FragmentActivity {
         resetAllButton();
         myGroupButton.setAlpha(highlightAlpha);
         toast.cancel();
-        setPage(new MyGroupFragment());
+        currentFragment = new MyGroupFragment();
+        setPage(currentFragment);
     }
 
     public void setAddGroupPage() {
@@ -112,7 +117,8 @@ public class MainActivity extends FragmentActivity {
         resetAllButton();
         addGroupButton.setAlpha(highlightAlpha);
         toast.cancel();
-        setPage(new AddGroupFragment());
+        currentFragment = new AddGroupFragment();
+        setPage(currentFragment);
     }
 
     public void setSettingPage() {
@@ -120,7 +126,8 @@ public class MainActivity extends FragmentActivity {
         resetAllButton();
         settingButton.setAlpha(highlightAlpha);
         toast.cancel();
-        setPage(new SettingFragment());
+        currentFragment = new SettingFragment();
+        setPage(currentFragment);
     }
 
     public void setGroupMemberPage(GroupObject group) {
@@ -129,6 +136,7 @@ public class MainActivity extends FragmentActivity {
         // create a new group fragment and assign the target group
         GroupMemberFragment groupMemberFragment = new GroupMemberFragment();
         groupMemberFragment.setGroup(group);
+        currentFragment = groupMemberFragment;
         setPage(groupMemberFragment);
     }
 

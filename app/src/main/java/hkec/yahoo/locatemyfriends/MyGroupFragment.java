@@ -86,9 +86,6 @@ public class MyGroupFragment extends BaseFragment{
     }
 
     public void disableAllGroup() {
-        for(GroupObject group : groupList){
-            group.setGroupVisibility(false);
-        }
         // reload the list
         setListView();
         callDisableAllGroupAPI();
@@ -103,6 +100,15 @@ public class MyGroupFragment extends BaseFragment{
             groupListStr[i] = groupList[i].name;
         }
         new API().delMemberVisibleToGroups(mainActivity, UserProfile.getInstance().id, groupListStr, getEventBus());
+    }
+
+    public void callSetGroupVisibilityAPI(GroupObject targetGroup, boolean isVisible) {
+        String[] apiParam = {targetGroup.name};
+        if (isVisible) {
+            new API().setMemberVisibleToGroups(mainActivity, UserProfile.getInstance().id, apiParam, getEventBus());
+        } else {
+            new API().delMemberVisibleToGroups(mainActivity, UserProfile.getInstance().id, apiParam, getEventBus());
+        }
     }
 
     public void callGetGroupAPI() {

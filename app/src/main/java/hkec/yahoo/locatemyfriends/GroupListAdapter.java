@@ -15,14 +15,14 @@ import android.widget.TextView;
  */
 public class GroupListAdapter extends ArrayAdapter<GroupObject> {
     public GroupObject[] list;
-    Context context;
+    MainActivity mainActivity;
     int layoutResourceId;
 
     public GroupListAdapter(Context context, int layoutResourceId, GroupObject[] list) {
         super(context, layoutResourceId, list);
         this.list = list;
         this.layoutResourceId = layoutResourceId;
-        this.context = context;
+        mainActivity = (MainActivity) context;
     }
 
 
@@ -32,7 +32,7 @@ public class GroupListAdapter extends ArrayAdapter<GroupObject> {
         GroupViewHolder viewHolder = null;
         final GroupObject group = getItem(position);
 
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) mainActivity.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         // displaying a new row view
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.group_list_entry, null);
@@ -57,12 +57,11 @@ public class GroupListAdapter extends ArrayAdapter<GroupObject> {
         viewHolder.groupVisibility.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String targetGroupName = list[position].name;
+                // set group visibility
                 if (isChecked) {
-                    // set user
-                    group.setGroupVisibility(false);
+                    ((MyGroupFragment)mainActivity.currentFragment).callSetGroupVisibilityAPI(list[position], false);
                 } else {
-                    group.setGroupVisibility(true);
+                    ((MyGroupFragment)mainActivity.currentFragment).callSetGroupVisibilityAPI(list[position], true);
                 }
             }
         });
@@ -74,7 +73,7 @@ public class GroupListAdapter extends ArrayAdapter<GroupObject> {
             @Override
             public void onClick(View v) {
                 GroupObject targetGroup = list[position];
-                ((MainActivity) context).setGroupMemberPage(targetGroup);
+                mainActivity.setGroupMemberPage(targetGroup);
             }
         });
 

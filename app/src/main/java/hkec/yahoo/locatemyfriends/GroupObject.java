@@ -27,7 +27,4 @@ public class GroupObject {
         memberList.put(_name, new MemberObject(_name));
     }
 
-    public void setGroupVisibility(boolean flag) {
-        this.visibility = flag;
-    }
 }
