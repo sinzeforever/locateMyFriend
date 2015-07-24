@@ -2,6 +2,7 @@ package hkec.yahoo.locatemyfriends;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.os.Handler;
 
 import java.util.ArrayList;
 
@@ -122,7 +122,9 @@ public class AddGroupFragment extends BaseFragment{
             return;
         }
         currentAPI = API_CREATE_GROUP;
-        String[] apiParam = {groupNameInput.getText().toString()};
+        String encodeGroupName = Util.encodeUrlParam(groupNameInput.getText().toString());
+        String[] apiParam = {encodeGroupName};
+        Log.d("myLog",apiParam[0]);
         new API().addGroups(getActivity(), apiParam, eventBus);
     }
 
@@ -145,7 +147,7 @@ public class AddGroupFragment extends BaseFragment{
 
         // call api
         currentAPI = API_ADD_MEMBERS_TO_GROUP;
-        new API().addMembersToGroup(getActivity(), tmpGroupName, apiParam, eventBus);
+        new API().addMembersToGroup(getActivity(), Util.encodeUrlParam(tmpGroupName), apiParam, eventBus);
     }
 
 

@@ -59,4 +59,8 @@ public class Util {
 
         return colors[ (index % colors.length)];
     }
+
+    public static String encodeUrlParam(String input) {
+        return input.replace(" ", "_");
+    }
 }
